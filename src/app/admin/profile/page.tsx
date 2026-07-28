@@ -60,14 +60,16 @@ function ContentColumn({
   icon,
   items,
   accentColor,
+  className = "",
 }: {
   title: string;
   icon: React.ReactNode;
   items: string[];
   accentColor: string;
+  className?: string;
 }) {
   return (
-    <div className="theme-card p-5 flex flex-col gap-3">
+    <div className={`theme-card p-5 flex flex-col gap-3 h-full ${className}`}>
       {/* Header */}
       <div className="flex items-center gap-2 pb-3 border-b border-gray-200 dark:border-white/10">
         {icon}
@@ -83,17 +85,19 @@ function ContentColumn({
       </button>
 
       {/* Items */}
-      {items.map((item, idx) => (
-        <div
-          key={idx}
-          className="border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 flex items-center justify-between hover:border-gray-300 dark:hover:border-white/20 transition-colors bg-gray-50 dark:bg-white/5"
-        >
-          <span className={`font-medium text-sm ${accentColor}`}>{item}</span>
-          <span className="text-[10px] text-gray-400 dark:text-white/20 uppercase tracking-widest">
-            Active
-          </span>
-        </div>
-      ))}
+      <div className="flex flex-wrap gap-2">
+        {items.map((item, idx) => (
+          <div
+            key={idx}
+            className="flex-1 min-w-[140px] border border-gray-200 dark:border-white/10 rounded-xl px-4 py-3 flex items-center justify-between hover:border-gray-300 dark:hover:border-white/20 transition-colors bg-gray-50 dark:bg-white/5"
+          >
+            <span className={`font-medium text-sm ${accentColor}`}>{item}</span>
+            <span className="text-[10px] text-gray-400 dark:text-white/20 uppercase tracking-widest">
+              Active
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -154,7 +158,7 @@ export default function ProfilePage() {
         </div>
 
         {/* ── Content Grid ── */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="flex flex-col gap-4">
           <ContentColumn
             title="Course"
             icon={
@@ -162,6 +166,7 @@ export default function ProfilePage() {
             }
             items={courseItems}
             accentColor="text-blue-500 dark:text-blue-400"
+            className="w-full"
           />
           <ContentColumn
             title="Book"
@@ -170,6 +175,7 @@ export default function ProfilePage() {
             }
             items={bookItems}
             accentColor="text-emerald-500 dark:text-emerald-400"
+            className="w-full"
           />
           <ContentColumn
             title="Idea / Plan"
@@ -178,6 +184,7 @@ export default function ProfilePage() {
             }
             items={ideaItems}
             accentColor="text-amber-500 dark:text-amber-400"
+            className="w-full"
           />
         </div>
 
