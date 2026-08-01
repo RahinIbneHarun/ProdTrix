@@ -18,8 +18,8 @@ const hedvig = Hedvig_Letters_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "OBE Study Portal",
-  description: "A study-focused platform for outcome-based education and academic workflow",
+  title: "Podtrix",
+  description: "",
 };
 
 export default function RootLayout({

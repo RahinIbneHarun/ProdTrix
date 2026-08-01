@@ -176,7 +176,6 @@ export default function ClientLayoutWrapper({
       semester: "Semester Management",
       "thesis-groups": "Thesis Groups",
       documents: "Documents",
-      "obe-marks": "OBE Marks",
       "upload-evidence": "Upload Evidence",
       students: "Students",
       courses: "Courses",
