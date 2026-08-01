@@ -23,5 +23,18 @@
   - [x] Card layout: picture → title → description (vertical)
   - [x] Keep header with Filter/Menu buttons
 
-- [ ] 3. Verify
+- [x] 3. Add search bar + responsive carousel improvements
+  - [x] Add search bar (Input with Search icon) at the top of the page
+  - [x] Filter notes by name (case-insensitive) when searching
+  - [x] Show matching cards in a static grid during search
+  - [x] Show "no results" message when nothing matches
+  - [x] Remove duplicate rendering from carousel (each note rendered exactly once)
+  - [x] Responsive card widths: 2 (mobile) / 3 (sm) / 4 (lg) per view
+  - [x] Auto-scroll with smooth wrap-back to start (no jump cut)
+  - [x] Pause on hover, resume on leave / after touch
+
+- [ ] 4. Verify
   - [ ] Run lint/build to check for errors
+  - [ ] Confirm 4 cards visible on large screens
+  - [ ] Confirm no duplicate cards anywhere in carousels
+  - [ ] Confirm search filters correctly by name

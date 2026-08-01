@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { BookOpen, Filter, Menu, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Filter, Menu, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Sheet,
-  SheetTrigger,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
 import BookNoteForm, { type BookNoteInput } from "@/components/book-note-form";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
@@ -63,74 +63,128 @@ const initialNonAcademicNotes: BookNote[] = [
   },
 ];
 
+// ── Note Card ─────────────────────────────────────────────────────────────────
+function NoteCard({ item }: { item: BookNote }) {
+  return (
+    <div className="theme-card overflow-hidden rounded-2xl text-center transition-all hover:-translate-y-0.5">
+      {/* Picture */}
+      <div className="relative h-36 w-full overflow-hidden bg-gray-100 dark:bg-white/5">
+        <Image
+          src={item.image}
+          alt={item.title}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5 p-3">
+        {/* Title */}
+        <h3 className="text-xs font-semibold text-black dark:text-white line-clamp-1">
+          {item.title}
+        </h3>
+        {/* Description */}
+        <p className="text-[11px] leading-snug text-gray-500 dark:text-white/40 line-clamp-2">
+          {item.description || "No description available."}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ── Auto-scrolling Carousel (with manual nav buttons) ────────────────────────
 function ItemCarousel({ items }: { items: BookNote[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
+  const isWrappingRef = useRef(false);
   const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Repeat the list enough times so the scrollable track is always wider
-  // than the container — otherwise short lists (2-3 items) run out of
-  // content and leave blank space before the loop resets.
-  const REPEAT = Math.max(6, Math.ceil(12 / items.length));
-  const loopItems = Array.from({ length: REPEAT }, (_, i) =>
-    items.map((item, j) => ({ ...item, _loopKey: `${i}-${j}` }))
-  ).flat();
+  // Cards are rendered exactly once (no duplicates). Responsive widths show
+  // 2 (mobile) / 3 (sm) / 4 (lg) cards per view, with calc() accounting for
+  // the 14px gaps so a full set fits exactly on screen.
+  // Track: w-[calc(50%-7px)]  sm:w-[calc(33.333%-9.333px)]  lg:w-[calc(25%-10.5px)]
 
-  // Each card is 190px wide + 14px gap → 204px per step
-  const step = 204;
-
-  // Auto-scroll loop using requestAnimationFrame
-  const scroll = useCallback(() => {
-    const el = trackRef.current;
-    if (!el) return;
-
-    if (pausedRef.current) {
-      // Auto-scroll paused — still update smooth-scroll behaviour
-      return;
-    }
-
-    el.scrollLeft += 0.5;
-
-    const maxScroll = el.scrollWidth - el.clientWidth - step;
-    if (el.scrollLeft >= maxScroll) {
-      el.scrollLeft = 0; // seamless loop reset
-    }
-
-    requestAnimationFrame(scroll);
-  }, [step]);
-
+  // Auto-scroll via rAF; when reaching the end, smoothly wrap back to start.
   useEffect(() => {
-    const raf = requestAnimationFrame(scroll);
-    return () => cancelAnimationFrame(raf);
-  }, [scroll]);
-
-  // Reset the resume timeout whenever the user manually scrolls
-  useEffect(() => {
-    const handleScroll = () => {
-      if (resumeTimeoutRef.current) {
-        clearTimeout(resumeTimeoutRef.current);
-      }
-      resumeTimeoutRef.current = setTimeout(() => {
-        pausedRef.current = false;
-      }, 1000);
-    };
     const el = trackRef.current;
-    el?.addEventListener("scroll", handleScroll);
-    return () => {
-      el?.removeEventListener("scroll", handleScroll);
+    if (!el || items.length === 0) return;
+
+    let rafId: number;
+    const speed = 0.5; // px per frame (~30px/s)
+
+    const wrapBack = () => {
+      isWrappingRef.current = true;
+      el.scrollTo({ left: 0, behavior: "smooth" });
+      // Resume forward scrolling once the wrap animation finishes
       if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+      resumeTimeoutRef.current = setTimeout(() => {
+        isWrappingRef.current = false;
+      }, 600);
     };
-  }, []);
+
+    const step = () => {
+      if (el && !pausedRef.current && !isWrappingRef.current) {
+        const maxScroll = el.scrollWidth - el.clientWidth;
+        if (maxScroll > 0) {
+          if (el.scrollLeft >= maxScroll - 1) {
+            wrapBack();
+          } else {
+            el.scrollLeft += speed;
+          }
+        }
+      }
+      rafId = requestAnimationFrame(step);
+    };
+
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
+  }, [items.length]);
 
   const pause = () => {
     pausedRef.current = true;
     if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
   };
 
-  const scrollByStep = (dir: 1 | -1) => {
+  const resume = () => {
+    pausedRef.current = false;
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+  };
+
+  const pauseThenResume = () => {
     pause();
-    trackRef.current?.scrollBy({ left: dir * step, behavior: "smooth" });
+    resumeTimeoutRef.current = setTimeout(() => {
+      pausedRef.current = false;
+    }, 1800);
+  };
+
+  const scrollByCard = (direction: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    pauseThenResume();
+
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll <= 0) return; // not enough items to scroll
+
+    // At the right edge and pressing right → wrap back to start
+    if (direction === 1 && el.scrollLeft >= maxScroll - 1) {
+      isWrappingRef.current = true;
+      el.scrollTo({ left: 0, behavior: "smooth" });
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+      resumeTimeoutRef.current = setTimeout(() => {
+        isWrappingRef.current = false;
+      }, 600);
+      return;
+    }
+
+    // At the left edge and pressing left → jump to the end
+    if (direction === -1 && el.scrollLeft <= 0) {
+      el.scrollTo({ left: maxScroll, behavior: "smooth" });
+      return;
+    }
+
+    const firstCard = el.firstElementChild as HTMLElement | null;
+    const cardWidth = firstCard ? firstCard.offsetWidth + 14 : 204;
+    el.scrollBy({ left: direction * cardWidth, behavior: "smooth" });
   };
 
   return (
@@ -139,7 +193,7 @@ function ItemCarousel({ items }: { items: BookNote[] }) {
       <button
         type="button"
         aria-label="Previous"
-        onClick={() => scrollByStep(-1)}
+        onClick={() => scrollByCard(-1)}
         className="theme-button-secondary flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
       >
         <ChevronLeft className="h-4 w-4" />
@@ -150,34 +204,15 @@ function ItemCarousel({ items }: { items: BookNote[] }) {
         ref={trackRef}
         className="no-scrollbar flex flex-1 gap-3.5 overflow-x-auto scroll-smooth"
         onMouseEnter={pause}
-        onTouchStart={pause}
+        onMouseLeave={resume}
+        onTouchStart={pauseThenResume}
       >
-        {loopItems.map((item) => (
+        {items.map((item) => (
           <div
-            key={item._loopKey}
-            className="theme-card w-[190px] shrink-0 overflow-hidden rounded-2xl text-center transition-all hover:-translate-y-0.5"
+            key={item.id}
+            className="w-[calc(50%-7px)] shrink-0 sm:w-[calc(33.333%-9.333px)] lg:w-[calc(25%-10.5px)]"
           >
-            {/* Picture */}
-            <div className="relative h-36 w-full overflow-hidden bg-gray-100 dark:bg-white/5">
-              <Image
-                src={item.image}
-                alt={item.title}
-                fill
-                sizes="190px"
-                className="object-cover"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1.5 p-3">
-              {/* Title */}
-              <h3 className="text-xs font-semibold text-black dark:text-white line-clamp-1">
-                {item.title}
-              </h3>
-              {/* Description */}
-              <p className="text-[11px] leading-snug text-gray-500 dark:text-white/40 line-clamp-2">
-                {item.description || "No description available."}
-              </p>
-            </div>
+            <NoteCard item={item} />
           </div>
         ))}
       </div>
@@ -186,7 +221,7 @@ function ItemCarousel({ items }: { items: BookNote[] }) {
       <button
         type="button"
         aria-label="Next"
-        onClick={() => scrollByStep(1)}
+        onClick={() => scrollByCard(1)}
         className="theme-button-secondary flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
       >
         <ChevronRight className="h-4 w-4" />
@@ -229,6 +264,18 @@ export default function BookNoteListPage() {
   const [academicNotes, setAcademicNotes] = useState(initialAcademicNotes);
   const [nonAcademicNotes, setNonAcademicNotes] = useState(initialNonAcademicNotes);
   const [modalOpen, setModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const query = searchQuery.trim().toLowerCase();
+  const isSearching = query.length > 0;
+
+  const matchingAcademic = academicNotes.filter((note) =>
+    note.title.toLowerCase().includes(query)
+  );
+  const matchingNonAcademic = nonAcademicNotes.filter((note) =>
+    note.title.toLowerCase().includes(query)
+  );
+  const matchingNotes = [...matchingAcademic, ...matchingNonAcademic];
 
   const handleAddNote = (note: BookNoteInput) => {
     const newNote: BookNote = {
@@ -272,17 +319,51 @@ export default function BookNoteListPage() {
           </div>
         </div>
 
-        {/* Sections */}
-        <NoteSection
-          title="Academic"
-          notes={academicNotes}
-          onAdd={() => setModalOpen(true)}
-        />
-        <NoteSection
-          title="Non Academic"
-          notes={nonAcademicNotes}
-          onAdd={() => setModalOpen(true)}
-        />
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-white/30" />
+          <Input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search notes by name..."
+            className="pl-9"
+          />
+        </div>
+
+        {isSearching ? (
+          /* ── Search Results ── */
+          <div className="space-y-3">
+            <h2 className="text-sm font-semibold text-black dark:text-white">
+              Search Results ({matchingNotes.length})
+            </h2>
+            {matchingNotes.length > 0 ? (
+              <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 lg:grid-cols-4">
+                {matchingNotes.map((note) => (
+                  <NoteCard key={note.id} item={note} />
+                ))}
+              </div>
+            ) : (
+              <div className="theme-card flex h-40 items-center justify-center rounded-2xl text-sm text-gray-400 dark:text-white/30">
+                {`No notes found matching "${searchQuery}".`}
+              </div>
+            )}
+          </div>
+        ) : (
+          /* ── Sections ── */
+          <>
+            <NoteSection
+              title="Academic"
+              notes={academicNotes}
+              onAdd={() => setModalOpen(true)}
+            />
+            <NoteSection
+              title="Non Academic"
+              notes={nonAcademicNotes}
+              onAdd={() => setModalOpen(true)}
+            />
+          </>
+        )}
       </div>
 
       {/* Add Note Modal */}
