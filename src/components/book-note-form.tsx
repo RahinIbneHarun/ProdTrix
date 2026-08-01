@@ -1,7 +1,7 @@
 // src/components/book-note-form.tsx
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, useRef, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   Select,
@@ -59,6 +59,24 @@ export default function BookNoteForm({
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
+  // Force visible text color on all form fields after mount
+  // (bypasses any CSS/Tailwind specificity issues inside modals)
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (!formRef.current) return;
+    const isDark = document.documentElement.classList.contains("dark");
+    const textColor = isDark ? "#f8fafc" : "#0f172a";
+    formRef.current
+      .querySelectorAll("input, textarea, select")
+      .forEach((el: Element) => {
+        const field = el as HTMLElement;
+        field.style.color = textColor;
+        field.style.setProperty("caret-color", textColor, "important");
+        field.style.setProperty("-webkit-text-fill-color", textColor, "important");
+      });
+  }, []);
+
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -105,6 +123,7 @@ export default function BookNoteForm({
 
       {/* Form */}
       <form
+        ref={formRef}
         onSubmit={handleSubmit}
         className={modal ? "space-y-5 p-10" : "theme-card space-y-5 p-6"}
       >
@@ -188,7 +207,12 @@ export default function BookNoteForm({
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Short summary of this note…"
             rows={3}
-            className="w-full resize-none rounded-xl border border-gray-300 dark:border-white/15 bg-white dark:bg-white/5 px-3 py-2.5 text-sm text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+            style={{
+              color: "var(--form-text)",
+              caretColor: "var(--form-text)",
+              WebkitTextFillColor: "var(--form-text)",
+            }}
+            className="w-full resize-none rounded-xl border border-gray-300 dark:border-white/15 bg-white dark:bg-white/5 px-3 py-2.5 text-sm placeholder:text-gray-400 dark:placeholder:text-white/25 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
           />
         </div>
 

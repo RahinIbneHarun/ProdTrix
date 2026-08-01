@@ -1,16 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
-import {
-  BookOpen,
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-  Menu,
-  Plus,
-  Search,
-} from "lucide-react";
+import { BookOpen, Filter, Menu, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   Sheet,
   SheetTrigger,
@@ -30,219 +22,176 @@ type BookNote = {
   section: "academic" | "non-academic";
 };
 
-const initialNotes: BookNote[] = [
-  // Academic
+const initialAcademicNotes: BookNote[] = [
   {
     id: "acad-1",
     title: "Microcontrollers",
-    description:
-      "Timers, interrupts, and embedded C programming fundamentals.",
-    image: "https://picsum.photos/seed/book-microcontrollers/300/300",
+    description: "Timers, interrupts and embedded C programming fundamentals.",
+    image: "https://picsum.photos/seed/microcontrollers/300/300",
     section: "academic",
   },
   {
     id: "acad-2",
     title: "Engineering Ethics",
-    description: "Professional responsibility, codes of conduct, and case studies.",
-    image: "https://picsum.photos/seed/book-ethics/300/300",
+    description: "Professional responsibility and ethical decision making.",
+    image: "https://picsum.photos/seed/engineering-ethics/300/300",
     section: "academic",
   },
   {
     id: "acad-3",
     title: "Digital Logic",
     description: "Boolean algebra, combinational and sequential circuits.",
-    image: "https://picsum.photos/seed/book-digital-logic/300/300",
+    image: "https://picsum.photos/seed/digital-logic/300/300",
     section: "academic",
   },
-  // Non Academic
+];
+
+const initialNonAcademicNotes: BookNote[] = [
   {
     id: "non-1",
     title: "Atomic Habits",
-    description: "Tiny changes, remarkable results — habit stacking in practice.",
-    image: "https://picsum.photos/seed/book-atomic-habits/300/300",
+    description: "Tiny changes, remarkable results — habit building systems.",
+    image: "https://picsum.photos/seed/atomic-habits/300/300",
     section: "non-academic",
   },
   {
     id: "non-2",
     title: "The Alchemist",
-    description: "Follow your personal legend and listen to your heart.",
-    image: "https://picsum.photos/seed/book-alchemist/300/300",
+    description: "A journey of following one's personal legend.",
+    image: "https://picsum.photos/seed/the-alchemist/300/300",
     section: "non-academic",
   },
 ];
 
-// ── Note Card (picture → title → description) ────────────────────────────────
-function NoteCard({ note }: { note: BookNote }) {
-  return (
-    <div className="shrink-0 w-[200px] sm:w-[240px] rounded-xl border border-gray-300 dark:border-white/10 overflow-hidden bg-white dark:bg-white/5 shadow-xl shadow-gray-400/50 dark:shadow-none hover:border-gray-400 dark:hover:border-white/20 transition-colors">
-      {/* Picture */}
-      <div className="relative h-28 w-full bg-gray-100 dark:bg-white/5">
-        <Image
-          src={note.image}
-          alt={note.title}
-          fill
-          sizes="240px"
-          className="object-cover"
-        />
-      </div>
-
-      {/* Title + Description */}
-      <div className="p-3 space-y-1.5">
-        <h3 className="text-sm font-medium text-black dark:text-white leading-snug truncate">
-          {note.title}
-        </h3>
-        <p className="text-xs text-black dark:text-white/40 leading-snug line-clamp-2">
-          {note.description}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 // ── Auto-scrolling Carousel (with manual nav buttons) ────────────────────────
-// Shows each note exactly once, scrolling forward and looping back to the
-// first item when the end is reached.
-function NoteCarousel({ notes }: { notes: BookNote[] }) {
+function ItemCarousel({ items }: { items: BookNote[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
-  const isWrappingRef = useRef(false);
   const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Auto-scroll via rAF; when reaching the end, smoothly wrap back to start.
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el || notes.length === 0) return;
+  // Repeat the list enough times so the scrollable track is always wider
+  // than the container — otherwise short lists (2-3 items) run out of
+  // content and leave blank space before the loop resets.
+  const REPEAT = Math.max(6, Math.ceil(12 / items.length));
+  const loopItems = Array.from({ length: REPEAT }, (_, i) =>
+    items.map((item, j) => ({ ...item, _loopKey: `${i}-${j}` }))
+  ).flat();
 
-    let rafId: number;
-    const speed = 0.4; // px per frame (~24px/s)
+  // Each card is 190px wide + 14px gap → 204px per step
+  const step = 204;
 
-    const wrapBack = () => {
-      isWrappingRef.current = true;
-      el.scrollTo({ left: 0, behavior: "smooth" });
-      // Resume forward scrolling once the wrap animation finishes
-      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
-      resumeTimeoutRef.current = setTimeout(() => {
-        isWrappingRef.current = false;
-      }, 600);
-    };
-
-    const step = () => {
-      if (el && !pausedRef.current && !isWrappingRef.current) {
-        const maxScroll = el.scrollWidth - el.clientWidth;
-        if (maxScroll <= 0) {
-          // Nothing to scroll (track fits inside the container)
-        } else if (el.scrollLeft >= maxScroll - 1) {
-          wrapBack();
-        } else {
-          el.scrollLeft += speed;
-        }
-      }
-      rafId = requestAnimationFrame(step);
-    };
-
-    rafId = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(rafId);
-  }, [notes.length]);
-
-  const pauseThenResume = useCallback(() => {
-    pausedRef.current = true;
-    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
-    resumeTimeoutRef.current = setTimeout(() => {
-      pausedRef.current = false;
-    }, 1800);
-  }, []);
-
-  const scrollByCard = (direction: 1 | -1) => {
+  // Auto-scroll loop using requestAnimationFrame
+  const scroll = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
-    pauseThenResume();
-    const maxScroll = el.scrollWidth - el.clientWidth;
 
-    // At the right edge and pressing right → wrap back to start
-    if (direction === 1 && el.scrollLeft >= maxScroll - 1) {
-      isWrappingRef.current = true;
-      el.scrollTo({ left: 0, behavior: "smooth" });
+    if (pausedRef.current) {
+      // Auto-scroll paused — still update smooth-scroll behaviour
+      return;
+    }
+
+    el.scrollLeft += 0.5;
+
+    const maxScroll = el.scrollWidth - el.clientWidth - step;
+    if (el.scrollLeft >= maxScroll) {
+      el.scrollLeft = 0; // seamless loop reset
+    }
+
+    requestAnimationFrame(scroll);
+  }, [step]);
+
+  useEffect(() => {
+    const raf = requestAnimationFrame(scroll);
+    return () => cancelAnimationFrame(raf);
+  }, [scroll]);
+
+  // Reset the resume timeout whenever the user manually scrolls
+  useEffect(() => {
+    const handleScroll = () => {
+      if (resumeTimeoutRef.current) {
+        clearTimeout(resumeTimeoutRef.current);
+      }
       resumeTimeoutRef.current = setTimeout(() => {
-        isWrappingRef.current = false;
-      }, 600);
-      return;
-    }
+        pausedRef.current = false;
+      }, 1000);
+    };
+    const el = trackRef.current;
+    el?.addEventListener("scroll", handleScroll);
+    return () => {
+      el?.removeEventListener("scroll", handleScroll);
+      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+    };
+  }, []);
 
-    // At the left edge and pressing left → jump to the end
-    if (direction === -1 && el.scrollLeft <= 0) {
-      el.scrollTo({ left: maxScroll, behavior: "smooth" });
-      return;
-    }
+  const pause = () => {
+    pausedRef.current = true;
+    if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
+  };
 
-    const firstCard = el.firstElementChild as HTMLElement | null;
-    const cardWidth = firstCard ? firstCard.offsetWidth + 12 : 240;
-    el.scrollBy({ left: direction * cardWidth, behavior: "smooth" });
+  const scrollByStep = (dir: 1 | -1) => {
+    pause();
+    trackRef.current?.scrollBy({ left: dir * step, behavior: "smooth" });
   };
 
   return (
-    <div
-      className="relative w-full"
-      onMouseEnter={() => (pausedRef.current = true)}
-      onMouseLeave={() => (pausedRef.current = false)}
-    >
-      {/* Left button */}
+    <div className="flex items-center gap-3">
+      {/* Prev button */}
       <button
         type="button"
-        onClick={() => scrollByCard(-1)}
-        aria-label="Scroll left"
-        className="absolute left-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full border border-gray-300 dark:border-white/10 bg-white/90 dark:bg-black/50 backdrop-blur-sm shadow-sm flex items-center justify-center hover:bg-white dark:hover:bg-black/70 transition-colors"
+        aria-label="Previous"
+        onClick={() => scrollByStep(-1)}
+        className="theme-button-secondary flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
       >
-        <ChevronLeft className="h-4 w-4 text-gray-600 dark:text-white/70" />
+        <ChevronLeft className="h-4 w-4" />
       </button>
 
-      {/* Scrollable track */}
+      {/* Carousel track */}
       <div
         ref={trackRef}
-        className="flex gap-3 overflow-x-auto no-scrollbar w-full px-9"
+        className="no-scrollbar flex flex-1 gap-3.5 overflow-x-auto scroll-smooth"
+        onMouseEnter={pause}
+        onTouchStart={pause}
       >
-        {notes.map((note) => (
-          <NoteCard key={note.id} note={note} />
+        {loopItems.map((item) => (
+          <div
+            key={item._loopKey}
+            className="theme-card w-[190px] shrink-0 overflow-hidden rounded-2xl text-center transition-all hover:-translate-y-0.5"
+          >
+            {/* Picture */}
+            <div className="relative h-36 w-full overflow-hidden bg-gray-100 dark:bg-white/5">
+              <Image
+                src={item.image}
+                alt={item.title}
+                fill
+                sizes="190px"
+                className="object-cover"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5 p-3">
+              {/* Title */}
+              <h3 className="text-xs font-semibold text-black dark:text-white line-clamp-1">
+                {item.title}
+              </h3>
+              {/* Description */}
+              <p className="text-[11px] leading-snug text-gray-500 dark:text-white/40 line-clamp-2">
+                {item.description || "No description available."}
+              </p>
+            </div>
+          </div>
         ))}
       </div>
 
-      {/* Right button */}
+      {/* Next button */}
       <button
         type="button"
-        onClick={() => scrollByCard(1)}
-        aria-label="Scroll right"
-        className="absolute right-1 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full border border-gray-300 dark:border-white/10 bg-white/90 dark:bg-black/50 backdrop-blur-sm shadow-sm flex items-center justify-center hover:bg-white dark:hover:bg-black/70 transition-colors"
+        aria-label="Next"
+        onClick={() => scrollByStep(1)}
+        className="theme-button-secondary flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
       >
-        <ChevronRight className="h-4 w-4 text-gray-600 dark:text-white/70" />
+        <ChevronRight className="h-4 w-4" />
       </button>
     </div>
-  );
-}
-
-// ── Add Note Button (opens BookNoteForm in a Sheet modal) ────────────────────
-function AddNoteCard({
-  onAdd,
-}: {
-  onAdd: (note: BookNoteInput) => void;
-}) {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <button
-          type="button"
-          className="theme-button-secondary flex items-center justify-center gap-2 w-full py-3 text-sm"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Add Note</span>
-        </button>
-      </SheetTrigger>
-      <SheetContent side="center">
-        <SheetHeader className="px-10">
-          <SheetTitle>Add a new note</SheetTitle>
-          <SheetDescription>Create a new BookNote entry.</SheetDescription>
-        </SheetHeader>
-        <BookNoteForm modal={true} onSubmitValue={onAdd} />
-      </SheetContent>
-    </Sheet>
   );
 }
 
@@ -254,63 +203,48 @@ function NoteSection({
 }: {
   title: string;
   notes: BookNote[];
-  onAdd: (note: BookNoteInput) => void;
+  onAdd: () => void;
 }) {
   return (
-    <div className="theme-card p-5 space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-white/10">
-        <div className="flex items-center gap-2">
-          <BookOpen className="h-4 w-4 text-blue-500 dark:text-blue-400" />
-          <h2 className="text-sm font-semibold text-black dark:text-white">
-            {title}
-          </h2>
-        </div>
-        <span className="text-[10px] uppercase tracking-widest text-black dark:text-white/25">
-          {notes.length} notes
-        </span>
-      </div>
-
-      {/* Add Note – opens modal */}
-      <AddNoteCard onAdd={onAdd} />
-
-      {/* Items — auto-scrolling carousel */}
-      {notes.length > 0 ? (
-        <NoteCarousel notes={notes} />
-      ) : (
-        <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 shadow-lg shadow-gray-400/40 dark:shadow-none px-6 py-8 text-center text-black dark:text-white/25 text-sm">
-          No {title.toLowerCase()} notes match your search.
-        </div>
-      )}
+    <div className="space-y-3">
+      <h2 className="text-sm font-semibold text-black dark:text-white">
+        {title}
+      </h2>
+      <ItemCarousel items={notes} />
+      {/* Add Note button (opens the modal) */}
+      <button
+        type="button"
+        onClick={onAdd}
+        className="flex h-28 w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/15 text-gray-400 dark:text-white/30 transition-colors hover:border-blue-400 hover:text-blue-500 dark:hover:border-blue-400 dark:hover:text-blue-400"
+      >
+        <Plus className="h-6 w-6" />
+        <span className="text-[11px] font-medium">Add Note</span>
+      </button>
     </div>
   );
 }
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function BookNoteListPage() {
-  const [notes, setNotes] = useState<BookNote[]>(initialNotes);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [academicNotes, setAcademicNotes] = useState(initialAcademicNotes);
+  const [nonAcademicNotes, setNonAcademicNotes] = useState(initialNonAcademicNotes);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const query = searchQuery.trim().toLowerCase();
-  const filteredNotes = notes.filter((n) =>
-    n.title.toLowerCase().includes(query)
-  );
-  const academicNotes = filteredNotes.filter((n) => n.section === "academic");
-  const nonAcademicNotes = filteredNotes.filter((n) => n.section === "non-academic");
+  const handleAddNote = (note: BookNoteInput) => {
+    const newNote: BookNote = {
+      id: `note-${Date.now()}`,
+      title: note.title,
+      description: note.description,
+      image: note.image,
+      section: note.section,
+    };
 
-  function handleAddNote(note: BookNoteInput) {
-    const nextId = `note-${Date.now()}`;
-    setNotes((prev) => [
-      ...prev,
-      {
-        id: nextId,
-        title: note.title,
-        description: note.description,
-        image: note.image,
-        section: note.section,
-      },
-    ]);
-  }
+    if (note.section === "academic") {
+      setAcademicNotes((prev) => [...prev, newNote]);
+    } else {
+      setNonAcademicNotes((prev) => [...prev, newNote]);
+    }
+  };
 
   return (
     <div className="min-h-screen pb-16">
@@ -338,38 +272,38 @@ export default function BookNoteListPage() {
           </div>
         </div>
 
-        {/* Search */}
-        <div className="relative shadow-lg shadow-gray-400/50 rounded-full dark:shadow-none">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-black dark:text-white/30" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search notes by name…"
-            className="w-full rounded-full border border-gray-300 dark:border-white/15 bg-white dark:bg-white/5 pl-10 pr-4 py-2.5 text-sm text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-colors"
-          />
-        </div>
-
         {/* Sections */}
-        {filteredNotes.length === 0 ? (
-          <div className="theme-card rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 shadow-xl shadow-gray-400/50 dark:shadow-none px-6 py-10 text-center text-black dark:text-white/25 text-sm">
-            No notes found for “{searchQuery.trim()}”.
-          </div>
-        ) : (
-          <>
-            <NoteSection
-              title="Academic"
-              notes={academicNotes}
-              onAdd={handleAddNote}
-            />
-            <NoteSection
-              title="Non Academic"
-              notes={nonAcademicNotes}
-              onAdd={handleAddNote}
-            />
-          </>
-        )}
+        <NoteSection
+          title="Academic"
+          notes={academicNotes}
+          onAdd={() => setModalOpen(true)}
+        />
+        <NoteSection
+          title="Non Academic"
+          notes={nonAcademicNotes}
+          onAdd={() => setModalOpen(true)}
+        />
       </div>
+
+      {/* Add Note Modal */}
+      <Sheet open={modalOpen} onOpenChange={setModalOpen}>
+        <SheetContent side="center" showCloseButton>
+          <SheetHeader>
+            <SheetTitle>Make a BookNote</SheetTitle>
+            <SheetDescription>
+              Fill in the details below — the note will appear in the list instantly.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="overflow-y-auto">
+            <BookNoteForm
+              modal
+              submitLabel="Add Note"
+              onSubmitValue={handleAddNote}
+              onSuccess={() => setModalOpen(false)}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }

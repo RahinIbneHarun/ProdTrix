@@ -42,6 +42,9 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+    /* Form field text visibility — used by inline styles on inputs/selects
+       so they adapt to the active theme automatically. */
+    --form-text: #0f172a;
   }
 
   .dark {
@@ -77,6 +80,8 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+    /* Form field text visibility — light text in dark mode */
+    --form-text: #f8fafc;
   }
 }
 
@@ -261,5 +266,29 @@ body {
 
 .no-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
+}
+
+/* ── Form field text visibility (bulletproof) ────────────────────────────────
+   Ensures typed/selected text is always readable inside form fields,
+   including within modals/sheets portaled to <body>. Plain CSS + !important
+   so it cannot be overridden by utility ordering or specificity issues.
+
+   -webkit-text-fill-color is the key property: if anything sets it to
+   transparent, the typed characters disappear while the caret still blinks.
+   Setting it to currentColor makes text follow the `color` rule below. */
+input,
+textarea,
+select {
+  color: #0f172a !important;
+  caret-color: #0f172a !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  color: #f8fafc !important;
+  caret-color: #f8fafc !important;
+  -webkit-text-fill-color: currentColor !important;
 }
 

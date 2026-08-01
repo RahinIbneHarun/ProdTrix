@@ -9,6 +9,10 @@
   - [x] Add `onSubmitValue?: (note: BookNoteInput) => void` prop
   - [x] Call `onSubmitValue` with structured note on submit
 
+  **Bonus fix:** Added `text-foreground caret-foreground` to `src/components/ui/input.tsx`
+  and `text-foreground` to `src/components/ui/select.tsx` so typed/selected text is
+  visible inside the Sheet modal (was invisible due to missing text color).
+
 - [x] 2. Update `src/app/book-notes/page.tsx`
   - [x] Extend `BookNote` type with `description`, `image`, `section`
   - [x] Add `description`/`image` to initial sample data
@@ -19,6 +23,5 @@
   - [x] Card layout: picture → title → description (vertical)
   - [x] Keep header with Filter/Menu buttons
 
-- [x] 3. Verify
-  - [x] Reviewed `src/components/ui/sheet.tsx` – all Sheet imports (`Side="center"`) confirmed available
-  - [ ] Run lint/build to check for errors (user declined `npx tsc --noEmit`)
+- [ ] 3. Verify
+  - [ ] Run lint/build to check for errors
