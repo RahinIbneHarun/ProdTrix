@@ -21,6 +21,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import Link from "next/link";
 import BookNoteForm, { type BookNoteInput } from "@/components/book-note-form";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
@@ -283,6 +284,7 @@ function ContentColumn({
   noteTypeOptions,
   defaultNoteType,
   submitLabel = "OK",
+  showAllHref,
 }: {
   title: string;
   icon: React.ReactNode;
@@ -299,6 +301,8 @@ function ContentColumn({
   /** Category used when no Note Type selector is rendered (e.g. per-container modals) */
   defaultNoteType?: string;
   submitLabel?: string;
+  /** Optional href to render a "Show All" link in the header */
+  showAllHref?: string;
 }) {
   return (
     <div className={`theme-card p-5 flex flex-col gap-3 h-full ${className}`}>
@@ -308,6 +312,14 @@ function ContentColumn({
         <h3 className="font-semibold text-black dark:text-white text-sm">
           {title}
         </h3>
+        {showAllHref && (
+          <Link
+            href={showAllHref}
+            className="ml-auto text-xs font-medium text-black dark:text-white/40 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
+          >
+            Show All
+          </Link>
+        )}
       </div>
 
       {/* Add Button – opens BookNoteForm in a Sheet modal */}
@@ -457,6 +469,7 @@ export default function ProfilePage() {
             onOpenChange={setCourseModalOpen}
             defaultNoteType="course"
             submitLabel="Add Course"
+            showAllHref="/book-notes"
           />
 
           {/* Notes container – shows all notes (Course + Book + Idea/Plan) */}
