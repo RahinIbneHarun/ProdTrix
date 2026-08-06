@@ -11,6 +11,7 @@ import {
   Pencil,
   ChevronLeft,
   ChevronRight,
+  StickyNote,
 } from "lucide-react";
 import {
   Sheet,
@@ -20,12 +21,12 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import BookNoteForm from "@/components/book-note-form";
+import BookNoteForm, { type BookNoteInput } from "@/components/book-note-form";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 type CarouselItem = { name: string; image: string };
 
-const courseItems: CarouselItem[] = [
+const initialCourseItems: CarouselItem[] = [
   { name: "C++", image: "https://picsum.photos/seed/course-cpp/300/300" },
   { name: "C#", image: "https://picsum.photos/seed/course-csharp/300/300" },
   {
@@ -34,7 +35,7 @@ const courseItems: CarouselItem[] = [
   },
 ];
 
-const bookItems: CarouselItem[] = [
+const initialBookItems: CarouselItem[] = [
   {
     name: "Clean Code",
     image: "https://picsum.photos/seed/book-cleancode/300/300",
@@ -45,7 +46,7 @@ const bookItems: CarouselItem[] = [
   },
 ];
 
-const ideaItems: CarouselItem[] = [
+const initialIdeaItems: CarouselItem[] = [
   {
     name: "Build a SaaS",
     image: "https://picsum.photos/seed/idea-saas/300/300",
@@ -54,6 +55,12 @@ const ideaItems: CarouselItem[] = [
     name: "Open source CLI tool",
     image: "https://picsum.photos/seed/idea-cli/300/300",
   },
+];
+
+const NOTE_TYPE_OPTIONS = [
+  { value: "course", label: "Course" },
+  { value: "book", label: "Book" },
+  { value: "idea", label: "Idea / Plan" },
 ];
 
 // Dummy placeholder images (picsum.photos, seeded so they stay stable across reloads)
@@ -270,12 +277,28 @@ function ContentColumn({
   items,
   accentColor,
   className = "",
+  open,
+  onOpenChange,
+  onSubmitNote,
+  noteTypeOptions,
+  defaultNoteType,
+  submitLabel = "OK",
 }: {
   title: string;
   icon: React.ReactNode;
   items: CarouselItem[];
   accentColor: string;
   className?: string;
+  /** Controlled Sheet modal open state */
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  /** Called with the submitted note; also closes the modal */
+  onSubmitNote: (note: BookNoteInput) => void;
+  /** Optional "Note Type" selector shown inside the modal */
+  noteTypeOptions?: { value: string; label: string }[];
+  /** Category used when no Note Type selector is rendered (e.g. per-container modals) */
+  defaultNoteType?: string;
+  submitLabel?: string;
 }) {
   return (
     <div className={`theme-card p-5 flex flex-col gap-3 h-full ${className}`}>
@@ -288,7 +311,7 @@ function ContentColumn({
       </div>
 
       {/* Add Button – opens BookNoteForm in a Sheet modal */}
-      <Sheet>
+      <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetTrigger asChild>
           <button
             type="button"
@@ -303,7 +326,14 @@ function ContentColumn({
             <SheetTitle>Add a new note</SheetTitle>
             <SheetDescription>Create a new BookNote entry.</SheetDescription>
           </SheetHeader>
-          <BookNoteForm modal={true} />
+          <BookNoteForm
+            modal={true}
+            submitLabel={submitLabel}
+            noteTypeOptions={noteTypeOptions}
+            defaultNoteType={defaultNoteType}
+            onSubmitValue={onSubmitNote}
+            onSuccess={() => onOpenChange(false)}
+          />
         </SheetContent>
       </Sheet>
 
@@ -316,6 +346,42 @@ function ContentColumn({
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("basic-info");
+
+  // Category lists (seeded with the initial constants) so added notes persist in-session
+  const [courseItems, setCourseItems] =
+    useState<CarouselItem[]>(initialCourseItems);
+  const [bookItems, setBookItems] = useState<CarouselItem[]>(initialBookItems);
+  const [ideaItems, setIdeaItems] = useState<CarouselItem[]>(initialIdeaItems);
+
+  // Controlled Sheet modal open states
+  const [courseModalOpen, setCourseModalOpen] = useState(false);
+  const [bookModalOpen, setBookModalOpen] = useState(false);
+  const [ideaModalOpen, setIdeaModalOpen] = useState(false);
+  const [notesModalOpen, setNotesModalOpen] = useState(false);
+
+  // All notes combined (Course + Book + Idea / Plan) for the Notes container
+  const allNotes: CarouselItem[] = [...courseItems, ...bookItems, ...ideaItems];
+
+  // Route an added note to the correct category list
+  const addNote = (note: BookNoteInput) => {
+    const newItem: CarouselItem = {
+      name: note.title,
+      image: note.image,
+    };
+    const type = note.noteType ?? "course";
+    if (type === "course") {
+      setCourseItems((prev) => [...prev, newItem]);
+    } else if (type === "book") {
+      setBookItems((prev) => [...prev, newItem]);
+    } else if (type === "idea") {
+      setIdeaItems((prev) => [...prev, newItem]);
+    }
+  };
+
+  const contentColumnProps = {
+    onSubmitNote: addNote,
+    className: "w-full",
+  };
 
   return (
     <div className="min-h-screen pb-16">
@@ -380,31 +446,59 @@ export default function ProfilePage() {
         {/* ── Content Grid ── */}
         <div className="flex flex-col gap-4">
           <ContentColumn
+            {...contentColumnProps}
             title="Course"
             icon={
               <GraduationCap className="h-4 w-4 text-blue-500 dark:text-blue-400" />
             }
             items={courseItems}
             accentColor="text-blue-500 dark:text-blue-400"
-            className="w-full"
+            open={courseModalOpen}
+            onOpenChange={setCourseModalOpen}
+            defaultNoteType="course"
+            submitLabel="Add Course"
           />
+
+          {/* Notes container – shows all notes (Course + Book + Idea/Plan) */}
           <ContentColumn
+            {...contentColumnProps}
+            title="Notes"
+            icon={
+              <StickyNote className="h-4 w-4 text-violet-500 dark:text-violet-400" />
+            }
+            items={allNotes}
+            accentColor="text-violet-500 dark:text-violet-400"
+            open={notesModalOpen}
+            onOpenChange={setNotesModalOpen}
+            noteTypeOptions={NOTE_TYPE_OPTIONS}
+            submitLabel="Add Note"
+          />
+
+          <ContentColumn
+            {...contentColumnProps}
             title="Book"
             icon={
               <BookOpen className="h-4 w-4 text-emerald-500 dark:text-emerald-400" />
             }
             items={bookItems}
             accentColor="text-emerald-500 dark:text-emerald-400"
-            className="w-full"
+            open={bookModalOpen}
+            onOpenChange={setBookModalOpen}
+            defaultNoteType="book"
+            submitLabel="Add Book"
           />
           <ContentColumn
+            {...contentColumnProps}
             title="Idea / Plan"
             icon={
               <Lightbulb className="h-4 w-4 text-amber-500 dark:text-amber-400" />
             }
             items={ideaItems}
             accentColor="text-amber-500 dark:text-amber-400"
-            className="w-full"
+            open={ideaModalOpen}
+            onOpenChange={setIdeaModalOpen}
+            defaultNoteType="idea"
+            submitLabel="Add Idea"
           />
         </div>
 

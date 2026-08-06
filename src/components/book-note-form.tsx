@@ -20,7 +20,11 @@ export type BookNoteInput = {
   section: "academic" | "non-academic";
   description: string;
   image: string;
+  /** Note category – only present when a Note Type selector is rendered */
+  noteType?: string;
 };
+
+type NoteTypeOption = { value: string; label: string };
 
 type Props = {
   /** Optional data arrays – defaults to the current hard‑coded lists */
@@ -34,6 +38,10 @@ type Props = {
   submitLabel?: string;
   /** When true, renders as a bare form (no page shell/header) for use inside modals */
   modal?: boolean;
+  /** When provided, renders a "Note Type" selector above the other fields */
+  noteTypeOptions?: NoteTypeOption[];
+  /** Category used when no Note Type selector is rendered (e.g. per-container modals) */
+  defaultNoteType?: string;
 };
 
 export default function BookNoteForm({
@@ -49,6 +57,8 @@ export default function BookNoteForm({
   onSubmitValue,
   submitLabel = "OK",
   modal = false,
+  noteTypeOptions,
+  defaultNoteType,
 }: Props) {
   const router = useRouter();
 
@@ -58,6 +68,9 @@ export default function BookNoteForm({
   const [chapter, setChapter] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [noteType, setNoteType] = useState(
+    noteTypeOptions?.[0]?.value ?? defaultNoteType ?? "",
+  );
 
   // Force visible text color on all form fields after mount
   // (bypasses any CSS/Tailwind specificity issues inside modals)
@@ -73,7 +86,11 @@ export default function BookNoteForm({
         const field = el as HTMLElement;
         field.style.color = textColor;
         field.style.setProperty("caret-color", textColor, "important");
-        field.style.setProperty("-webkit-text-fill-color", textColor, "important");
+        field.style.setProperty(
+          "-webkit-text-fill-color",
+          textColor,
+          "important",
+        );
       });
   }, []);
 
@@ -83,16 +100,23 @@ export default function BookNoteForm({
     // Auto-generate a stable placeholder image when none is provided
     const image =
       imageUrl.trim() ||
-      `https://picsum.photos/seed/book-${bookName
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "") || "note"}/300/300`;
+      `https://picsum.photos/seed/book-${
+        bookName
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "") || "note"
+      }/300/300`;
 
     const note: BookNoteInput = {
       title: bookName,
       section,
       description: description.trim(),
       image,
+      ...(noteTypeOptions
+        ? { noteType: noteType || noteTypeOptions[0]?.value }
+        : defaultNoteType
+          ? { noteType: defaultNoteType }
+          : {}),
     };
 
     // TODO: replace with real API call when ready
@@ -127,6 +151,25 @@ export default function BookNoteForm({
         onSubmit={handleSubmit}
         className={modal ? "space-y-5 p-10" : "theme-card space-y-5 p-6"}
       >
+        {/* Note Type selector – only shown when the parent provides options */}
+        {noteTypeOptions && noteTypeOptions.length > 0 && (
+          <div className="space-y-1.5">
+            <label className="theme-label">Note Type</label>
+            <Select value={noteType} onValueChange={setNoteType}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a type" />
+              </SelectTrigger>
+              <SelectContent>
+                {noteTypeOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
         {/* Book selector */}
         <div className="space-y-1.5">
           <label className="theme-label">Book Name</label>
