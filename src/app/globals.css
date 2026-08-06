@@ -1,0 +1,307 @@
+/* globals.css - Tailwind CSS v3 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.font-cambria {
+  font-family: "Cambria", "Georgia", "Times New Roman", serif;
+}
+
+@layer base {
+  :root {
+    --muted: 300 46% 95%;
+    --border: 300 40% 90%;
+    --primary: 300 100% 14%;
+    --background: 300 40% 97%;
+    --foreground: 300 24% 14%;
+    --card: 300 40% 100%;
+    --card-foreground: 300 26% 18%;
+    --popover: 300 40% 100%;
+    --popover-foreground: 300 26% 18%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 300 94% 24%;
+    --secondary-foreground: 0 0% 100%;
+    --muted-foreground: 300 24% 45%;
+    --accent: 300 100% 22%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 340 100% 64%;
+    --destructive-foreground: 0 0% 100%;
+    --input: 300 20% 96%;
+    --ring: 300 100% 17%;
+    --chart-1: 300 100% 14%;
+    --chart-2: 300 88% 24%;
+    --chart-3: 300 70% 34%;
+    --chart-4: 300 50% 42%;
+    --chart-5: 300 90% 20%;
+    --radius: 0.625rem;
+    --sidebar: 300 30% 98%;
+    --sidebar-foreground: 300 24% 16%;
+    --sidebar-primary: 300 100% 14%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 300 100% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 300 40% 91%;
+    --sidebar-ring: 300 100% 17%;
+    --sidebar-background: 300 30% 98%;
+  }
+
+  .dark {
+    --background: 300 24% 8%;
+    --foreground: 300 10% 95%;
+    --muted: 300 18% 18%;
+    --border: 300 20% 20%;
+    --primary: 300 100% 14%;
+    --card: 300 24% 12%;
+    --card-foreground: 300 12% 96%;
+    --popover: 300 24% 12%;
+    --popover-foreground: 300 12% 96%;
+    --primary-foreground: 300 24% 8%;
+    --secondary: 300 92% 24%;
+    --secondary-foreground: 300 12% 96%;
+    --muted-foreground: 300 18% 66%;
+    --accent: 300 100% 22%;
+    --accent-foreground: 300 12% 96%;
+    --destructive: 340 100% 64%;
+    --destructive-foreground: 300 12% 96%;
+    --input: 300 18% 20%;
+    --ring: 300 100% 14%;
+    --chart-1: 300 100% 14%;
+    --chart-2: 300 88% 24%;
+    --chart-3: 300 70% 34%;
+    --chart-4: 300 58% 28%;
+    --chart-5: 300 90% 20%;
+    --sidebar: 300 24% 10%;
+    --sidebar-foreground: 300 12% 96%;
+    --sidebar-primary: 300 100% 14%;
+    --sidebar-primary-foreground: 300 24% 8%;
+    --sidebar-accent: 300 90% 18%;
+    --sidebar-accent-foreground: 300 12% 96%;
+    --sidebar-border: 300 24% 16%;
+    --sidebar-ring: 300 100% 14%;
+    --sidebar-background: 300 24% 10%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Remove @theme inline block - it's v4 specific */
+
+/* Keep your custom theme classes */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family:
+    var(--font-geist-sans),
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  background-color: var(--background);
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family:
+    var(--font-geist-sans),
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  background-color: var(--background);
+}
+
+/* Light theme - study-friendly workspace */
+.theme-shell {
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.12), hsl(var(--primary) / 0.06));
+  border: 1px solid hsl(var(--border));
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 60px hsl(var(--primary) / 0.08);
+}
+
+.dark .theme-shell {
+  background:
+    radial-gradient(circle at top center, hsl(var(--primary) / 0.24), transparent 28%),
+    linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 100%);
+  border-color: hsl(var(--border));
+  border-radius: 1.5rem;
+}
+
+.theme-grid {
+  background-image: none;
+}
+
+.dark .theme-grid {
+  background-image:
+    linear-gradient(hsl(var(--foreground) / 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.08) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.theme-nav {
+  background: hsl(var(--card) / 0.9);
+  border-bottom: 1px solid hsl(var(--border));
+  backdrop-filter: blur(14px);
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.dark .theme-nav {
+  background: hsl(var(--popover) / 0.92);
+  border-bottom: 1px solid hsl(var(--border));
+  backdrop-filter: blur(14px);
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.theme-terminal {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 1.25rem;
+  box-shadow: 0 18px 40px hsl(var(--primary) / 0.08);
+}
+
+.dark .theme-terminal {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 80px hsl(var(--primary) / 0.35);
+}
+
+.theme-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 1.5rem;
+  box-shadow: 0 12px 30px hsl(var(--primary) / 0.06);
+}
+
+.dark .theme-card {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 80px hsl(var(--primary) / 0.18);
+}
+
+.theme-button-primary {
+  background: #360D36;
+  color: #ffffff;
+  border: 1px solid #360D36;
+  border-radius: 9999px;
+  box-shadow: 0 12px 25px rgba(54,13,54,0.18);
+}
+
+.theme-button-primary:hover {
+  background: #360D36;
+  border-color: #360D36;
+}
+
+.theme-button-secondary {
+  background: hsl(var(--secondary));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  border-radius: 9999px;
+}
+
+.theme-button-secondary:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--primary-foreground));
+}
+
+.dark .theme-button-secondary {
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.dark .theme-button-secondary:hover {
+  background: hsl(var(--accent) / 0.16);
+}
+
+.theme-label {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.dark .theme-label {
+  color: hsl(var(--muted-foreground));
+}
+
+.theme-heading-accent {
+  color: hsl(var(--primary));
+  border-bottom: 2px solid hsl(var(--primary));
+  display: inline-block;
+}
+
+.dark .theme-heading-accent {
+  color: hsl(var(--accent));
+  border-bottom-color: hsl(var(--accent));
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Add to your existing globals.css */
+@layer base {
+  :root {
+    --sidebar-background: 300 30% 98%;
+    --sidebar-foreground: 300 24% 16%;
+    --sidebar-primary: 300 100% 14%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 300 100% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 300 40% 91%;
+    --sidebar-ring: 300 100% 17%;
+  }
+
+  .dark {
+    --sidebar-background: 300 24% 10%;
+    --sidebar-foreground: 300 12% 96%;
+    --sidebar-primary: 300 100% 14%;
+    --sidebar-primary-foreground: 300 24% 8%;
+    --sidebar-accent: 300 90% 18%;
+    --sidebar-accent-foreground: 300 12% 96%;
+    --sidebar-border: 300 24% 16%;
+    --sidebar-ring: 300 100% 14%;
+  }
+}
