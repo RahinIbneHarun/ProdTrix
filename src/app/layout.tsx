@@ -18,7 +18,7 @@ const hedvig = Hedvig_Letters_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "OBE Study Portal",
+  title: "ProdRrix",
   description: "A study-focused platform for outcome-based education and academic workflow",
 };
 

@@ -90,9 +90,8 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                             paddingRight: "10%",
                         }}
                     >
-                            <div className="flex items-center gap-4">
-                            <div className="flex h-10 w-10 items-center justify-center border border-border bg-transparent text-[10px] font-bold tracking-[0.18em] text-foreground">LOGO</div>
-                            <span className="text-[20px] font-medium tracking-tight text-foreground">ProdTrix</span>
+                        <div className="flex items-center">
+                            <span className="text-[20px] font-medium tracking-tight text-foreground">ProdRrix</span>
                         </div>
 
                         <nav className="flex items-center gap-4 text-[15px] font-medium text-muted-foreground">
