@@ -25,7 +25,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
         }
     }, [pathname, router]);
 
-    const isPublicShellRoute = pathname === "/" || pathname.startsWith("/login") || pathname.startsWith("/signup") || pathname.startsWith("/authenticate") || pathname.startsWith("/auth-callback") || pathname.startsWith("/forgot-password");
+    const isPublicShellRoute = pathname === "/" || pathname === "/Home" || pathname.startsWith("/login") || pathname.startsWith("/signup") || pathname.startsWith("/authenticate") || pathname.startsWith("/auth-callback") || pathname.startsWith("/forgot-password");
 
     useEffect(() => {
         if (isPublicShellRoute) {
@@ -95,7 +95,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                         </div>
 
                         <nav className="flex items-center gap-4 text-[15px] font-medium text-muted-foreground">
-                            <Link href="/" className="transition-colors hover:text-foreground">
+                            <Link href="/Home" className="transition-colors hover:text-foreground">
                                 Home
                             </Link>
 
