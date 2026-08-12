@@ -20,34 +20,36 @@ export default function ClientLayoutWrapper({
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [authUser, setAuthUser] = useState<any>(null);
 
-  // Handle redirects for /admin and /supervisor
-  useEffect(() => {
-    if (pathname === "/admin") {
-      router.push("/admin/dashboard");
-    } else if (pathname === "/supervisor") {
-      router.push("/supervisor/dashboard");
-    }
-  }, [pathname, router]);
+    // Handle redirects for /admin and /supervisor
+    useEffect(() => {
+        if (pathname === "/admin") {
+            router.push("/admin/dashboard");
+        } else if (pathname === "/supervisor") {
+            router.push("/supervisor/dashboard");
+        }
+    }, [pathname, router]);
+
+  
 
   const isPublicShellRoute =
-    pathname === "/" ||
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/signup") ||
-    pathname.startsWith("/authenticate") ||
-    pathname.startsWith("/auth-callback") ||
-    pathname.startsWith("/support")||
-    pathname.startsWith("/about")||
-    pathname.startsWith("/forgot-password")||
-    pathname.startsWith("/admin/profile")||
-    pathname.startsWith("/feed")||
-    pathname.startsWith("/book-notes");
+  pathname.startsWith("/api/") ||   // guard: never run auth 
+  pathname === "/" ||
+  pathname.startsWith("/login") ||
+  pathname.startsWith("/signup") ||
+  pathname.startsWith("/authenticate") ||
+  pathname.startsWith("/auth-callback") ||
+  pathname.startsWith("/support") ||
+  pathname.startsWith("/about") ||
+  pathname.startsWith("/forgot-password") ||
+  pathname.startsWith("/admin/profile") ||
+  pathname.startsWith("/feed") ||
+  pathname.startsWith("/book-notes");
 
-  useEffect(() => {
-    if (isPublicShellRoute) {
-      setIsAuthReady(true);
-      return;
-    }
-
+useEffect(()=>{
+  if (isPublicShellRoute) {
+    setIsAuthReady(true);
+    return;
+  }
     const initAuth = async () => {
       try {
         const res = await fetch(`/api/auth/cookie`, {
@@ -209,7 +211,6 @@ export default function ClientLayoutWrapper({
       semester: "Semester Management",
       "thesis-groups": "ProdTrix Groups",
       documents: "Documents",
-      "obe-marks": "OBE Marks",
       "upload-evidence": "Upload Evidence",
       students: "Students",
       courses: "Courses",

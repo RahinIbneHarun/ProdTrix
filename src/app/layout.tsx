@@ -27,8 +27,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Podtrix",
-  description: "",
+  title: "ProdRrix",
+  description: "A study-focused platform for outcome-based education and academic workflow",
 };
 
 export default function RootLayout({
