@@ -35,7 +35,12 @@ export default function ClientLayoutWrapper({
     pathname.startsWith("/signup") ||
     pathname.startsWith("/authenticate") ||
     pathname.startsWith("/auth-callback") ||
-    pathname.startsWith("/forgot-password");
+    pathname.startsWith("/support")||
+    pathname.startsWith("/about")||
+    pathname.startsWith("/forgot-password")||
+    pathname.startsWith("/admin/profile")||
+    pathname.startsWith("/feed")||
+    pathname.startsWith("/book-notes");
 
   useEffect(() => {
     if (isPublicShellRoute) {
