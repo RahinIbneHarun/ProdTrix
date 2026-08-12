@@ -4,11 +4,11 @@ import { SidebarNav } from "@/components/sidebar-nav";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { isPathAllowedForRoles } from "@/lib/auth/route-permissions";
-import { ChevronRight, Home, LogOut, Menu, X } from "lucide-react";
+import { ChevronRight, Home, LogOut, Menu, User, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { useEffect, useState, Suspense } from "react";
-
 export default function ClientLayoutWrapper({
   children,
 }: {
@@ -16,40 +16,36 @@ export default function ClientLayoutWrapper({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { theme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [authUser, setAuthUser] = useState<any>(null);
 
-    // Handle redirects for /admin and /supervisor
-    useEffect(() => {
-        if (pathname === "/admin") {
-            router.push("/admin/dashboard");
-        } else if (pathname === "/supervisor") {
-            router.push("/supervisor/dashboard");
-        }
-    }, [pathname, router]);
-
-  
+  // Handle redirects for /admin and /supervisor
+  useEffect(() => {
+    if (pathname === "/admin") {
+      router.push("/admin/dashboard");
+    } else if (pathname === "/supervisor") {
+      router.push("/supervisor/dashboard");
+    }
+  }, [pathname, router]);
 
   const isPublicShellRoute =
-  pathname.startsWith("/api/") ||   // guard: never run auth 
-  pathname === "/" ||
-  pathname.startsWith("/login") ||
-  pathname.startsWith("/signup") ||
-  pathname.startsWith("/authenticate") ||
-  pathname.startsWith("/auth-callback") ||
-  pathname.startsWith("/support") ||
-  pathname.startsWith("/about") ||
-  pathname.startsWith("/forgot-password") ||
-  pathname.startsWith("/admin/profile") ||
-  pathname.startsWith("/feed") ||
-  pathname.startsWith("/book-notes");
+    pathname.startsWith("/api/") || // guard: never run auth
+    pathname === "/" ||
+    pathname.startsWith("/Home") ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/signup") ||
+    pathname.startsWith("/authenticate") ||
+    pathname.startsWith("/auth-callback") ||
+    pathname.startsWith("/support") ||
+    pathname.startsWith("/about") ||
+    pathname.startsWith("/forgot-password") ||
+    pathname.startsWith("/admin/profile") ||
+    pathname.startsWith("/feed") ||
+    pathname.startsWith("/book-notes");
 
-useEffect(()=>{
-  if (isPublicShellRoute) {
-    setIsAuthReady(true);
-    return;
-  }
+  useEffect(() => {
     const initAuth = async () => {
       try {
         const res = await fetch(`/api/auth/cookie`, {
@@ -59,30 +55,35 @@ useEffect(()=>{
         if (res.ok) {
           const authData = await res.json();
 
-          if (!authData?.authenticated || !authData?.user) {
-            throw new Error("Unauthenticated");
-          }
-
-          const userRoles = authData.user.roles ?? [];
-          const isAllowed = isPathAllowedForRoles(pathname, userRoles);
-
-          if (!isAllowed) {
-            setIsAuthReady(true);
+          if (authData?.authenticated && authData?.user) {
             setAuthUser(authData);
-            router.replace("/unauthorized");
+            setIsAuthReady(true);
+
+            // For protected routes, check role authorization
+            if (!isPublicShellRoute) {
+              const userRoles = authData.user.roles ?? [];
+              const isAllowed = isPathAllowedForRoles(pathname, userRoles);
+
+              if (!isAllowed) {
+                router.replace("/unauthorized");
+                return;
+              }
+            }
+
             return;
           }
-
-          setAuthUser(authData);
-          setIsAuthReady(true);
-          return;
         }
       } catch (err) {
-        // fallthrough to redirect
+        // fallthrough
       }
 
-      const next = encodeURIComponent(pathname || "/admin/dashboard");
-      window.location.replace(`/api/auth/login?next=${next}`);
+      setIsAuthReady(true);
+
+      // Only redirect to login for protected routes
+      if (!isPublicShellRoute) {
+        const next = encodeURIComponent(pathname || "/admin/dashboard");
+        window.location.replace(`/api/auth/login?next=${next}`);
+      }
     };
 
     initAuth();
@@ -99,7 +100,16 @@ useEffect(()=>{
   if (isPublicShellRoute) {
     return (
       <div className="relative flex min-h-screen w-full flex-col overflow-hidden bg-background text-foreground transition-colors duration-300">
-        <header className="theme-nav sticky top-0 z-50">
+        <header
+          className="theme-nav sticky top-0 z-50 transition-all duration-300"
+          style={{
+            backgroundColor:
+              theme === "dark"
+                ? "rgba(15, 15, 15, 0.95)"
+                : "rgba(255, 255, 255, 0.97)",
+            borderBottom: `1px solid ${theme === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"}`,
+          }}
+        >
           <div
             className="mx-auto flex w-full items-center justify-between py-4"
             style={{
@@ -108,12 +118,37 @@ useEffect(()=>{
             }}
           >
             <div className="flex items-center gap-4">
-              <div className="flex h-10 w-10 items-center justify-center border border-border bg-transparent text-[10px] font-bold tracking-[0.18em] text-foreground">
-                LOGO
-              </div>
-              <span className="text-[20px] font-medium tracking-tight text-foreground">
-                ProdTrix
-              </span>
+              <Link
+                href="/Home"
+                className="flex items-center gap-3 transition-opacity duration-300"
+              >
+                <div
+                  className="flex h-10 w-12 items-center justify-center rounded-lg font-bold tracking-[0.18em] text-[10px] transition-all duration-300"
+                  style={{
+                    backgroundColor:
+                      theme === "dark"
+                        ? "rgba(255, 255, 255, 0.1)"
+                        : "rgba(0, 0, 0, 0.05)",
+                    border: `1px solid ${theme === "dark" ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)"}`,
+                  }}
+                >
+                  <img
+                    src="/images/ProdTrix.jpeg"
+                    alt="ProdTrix Logo"
+                    className="transition-all duration-300"
+                    style={{
+                      filter:
+                        theme === "dark"
+                          ? "brightness(1.1) invert(1)"
+                          : "brightness(1) invert(0)",
+                      opacity: theme === "dark" ? 0.9 : 1,
+                    }}
+                  />
+                </div>
+                <span className="text-[20px] font-medium tracking-tight text-foreground transition-colors duration-300">
+                  ProdTrix
+                </span>
+              </Link>
             </div>
 
             <nav className="flex items-center gap-4 text-[15px] font-medium text-muted-foreground">
@@ -138,19 +173,40 @@ useEffect(()=>{
                 >
                   Support
                 </Link>
-                <Link
-                  href="/login"
-                  className="theme-button-primary px-4 py-2 font-medium transition-all"
-                >
-                  Login
-                </Link>
 
-                <Link
-                  href="/signup"
-                  className="theme-button-secondary px-4 py-2 font-medium transition-all"
-                >
-                  Create account
-                </Link>
+                {authUser ? (
+                  <>
+                    <Link
+                      href="/admin/profile"
+                      title="Go to profile"
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-colors hover:border-primary/30 hover:bg-primary/10 hover:text-foreground"
+                    >
+                      <User className="h-4 w-4" />
+                    </Link>
+                    <a
+                      href="/api/auth/logout"
+                      title="Sign out"
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-colors hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      <LogOut className="h-3.5 w-3.5" />
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      className="theme-button-primary px-4 py-2 font-medium transition-all"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/signup"
+                      className="theme-button-secondary px-4 py-2 font-medium transition-all"
+                    >
+                      Create account
+                    </Link>
+                  </>
+                )}
               </div>
 
               <ThemeToggle />
@@ -208,10 +264,8 @@ useEffect(()=>{
       dashboard: "Dashboard",
       supervisor: "Supervisor",
       admin: "Admin",
-      semester: "Semester Management",
-      "thesis-groups": "ProdTrix Groups",
+      "ProdTrix Group": "ProdTrix Groups",
       documents: "Documents",
-      "upload-evidence": "Upload Evidence",
       students: "Students",
       courses: "Courses",
       reports: "Reports",
@@ -244,8 +298,24 @@ useEffect(()=>{
     <SidebarProvider defaultOpen={true}>
       <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
         {/* Sidebar */}
-        <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-border bg-card">
-          <div className="flex h-16 items-center border-b border-border px-4">
+        <aside
+          className="hidden md:flex w-64 shrink-0 flex-col border-r border-border bg-card transition-all duration-300"
+          style={{
+            backgroundColor:
+              theme === "dark"
+                ? "rgba(20, 20, 20, 0.8)"
+                : "rgba(250, 250, 250, 0.8)",
+          }}
+        >
+          <div
+            className="flex h-16 items-center border-b border-border px-4 transition-all duration-300"
+            style={{
+              borderColor:
+                theme === "dark"
+                  ? "rgba(255, 255, 255, 0.1)"
+                  : "rgba(0, 0, 0, 0.1)",
+            }}
+          >
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center border border-border bg-transparent text-[8px] font-bold tracking-[0.18em] text-foreground">
                 Study
@@ -263,7 +333,13 @@ useEffect(()=>{
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileMenuOpen(true)}
-          className="fixed left-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card shadow-sm md:hidden"
+          className="fixed left-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card shadow-sm transition-all duration-300 md:hidden"
+          style={{
+            backgroundColor:
+              theme === "dark"
+                ? "rgba(40, 40, 40, 0.9)"
+                : "rgba(245, 245, 245, 0.9)",
+          }}
         >
           <Menu className="h-5 w-5 text-foreground" />
         </button>
@@ -272,12 +348,28 @@ useEffect(()=>{
         {mobileMenuOpen && (
           <>
             <div
-              className="fixed inset-0 z-50 bg-primary/30 backdrop-blur-sm md:hidden"
+              className="fixed inset-0 z-50 bg-primary/30 backdrop-blur-sm transition-all duration-300 md:hidden"
               onClick={() => setMobileMenuOpen(false)}
             />
             <div className="fixed left-0 top-0 z-50 h-full w-64 transform animate-in slide-in-from-left duration-300 md:hidden">
-              <div className="flex h-full flex-col bg-card shadow-xl">
-                <div className="flex h-16 items-center justify-between border-b border-border px-4">
+              <div
+                className="flex h-full flex-col bg-card shadow-xl transition-all duration-300"
+                style={{
+                  backgroundColor:
+                    theme === "dark"
+                      ? "rgba(20, 20, 20, 0.95)"
+                      : "rgba(250, 250, 250, 0.95)",
+                }}
+              >
+                <div
+                  className="flex h-16 items-center justify-between border-b border-border px-4 transition-all duration-300"
+                  style={{
+                    borderColor:
+                      theme === "dark"
+                        ? "rgba(255, 255, 255, 0.1)"
+                        : "rgba(0, 0, 0, 0.1)",
+                  }}
+                >
                   <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 items-center justify-center border border-border bg-transparent text-[8px] font-bold tracking-[0.18em] text-foreground">
                       Study
@@ -304,8 +396,19 @@ useEffect(()=>{
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden min-w-0">
           <header
-            className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-card/95"
-            style={{ paddingLeft: "1rem", paddingRight: "2rem" }}
+            className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-card/95 transition-all duration-300"
+            style={{
+              paddingLeft: "1rem",
+              paddingRight: "2rem",
+              backgroundColor:
+                theme === "dark"
+                  ? "rgba(20, 20, 20, 0.95)"
+                  : "rgba(255, 255, 255, 0.95)",
+              borderColor:
+                theme === "dark"
+                  ? "rgba(255, 255, 255, 0.1)"
+                  : "rgba(0, 0, 0, 0.1)",
+            }}
           >
             {/* Breadcrumbs */}
             <div className="flex items-center gap-2">
