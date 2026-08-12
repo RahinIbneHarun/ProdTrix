@@ -9,85 +9,82 @@
 
 @layer base {
   :root {
-    --muted: oklch(0.97 0 0);
-    --border: oklch(0.922 0 0);
-    --primary: oklch(0.205 0 0);
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --destructive-foreground: oklch(0.985 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
+    --muted: 300 46% 95%;
+    --border: 300 40% 90%;
+    --primary: 300 100% 14%;
+    --background: 300 40% 97%;
+    --foreground: 300 24% 14%;
+    --card: 300 40% 100%;
+    --card-foreground: 300 26% 18%;
+    --popover: 300 40% 100%;
+    --popover-foreground: 300 26% 18%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 300 94% 24%;
+    --secondary-foreground: 0 0% 100%;
+    --muted-foreground: 300 24% 45%;
+    --accent: 300 100% 22%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 340 100% 64%;
+    --destructive-foreground: 0 0% 100%;
+    --input: 300 20% 96%;
+    --ring: 300 100% 17%;
+    --chart-1: 300 100% 14%;
+    --chart-2: 300 88% 24%;
+    --chart-3: 300 70% 34%;
+    --chart-4: 300 50% 42%;
+    --chart-5: 300 90% 20%;
     --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
-    /* Form field text visibility — used by inline styles on inputs/selects
-       so they adapt to the active theme automatically. */
-    --form-text: #0f172a;
+    --sidebar: 300 30% 98%;
+    --sidebar-foreground: 300 24% 16%;
+    --sidebar-primary: 300 100% 14%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 300 100% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 300 40% 91%;
+    --sidebar-ring: 300 100% 17%;
+    --sidebar-background: 300 30% 98%;
   }
 
   .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --border: oklch(1 0 0 / 10%);
-    --primary: oklch(0.922 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --destructive-foreground: oklch(0.985 0 0);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
-    /* Form field text visibility — light text in dark mode */
-    --form-text: #f8fafc;
+    --background: 300 24% 8%;
+    --foreground: 300 10% 95%;
+    --muted: 300 18% 18%;
+    --border: 300 20% 20%;
+    --primary: 300 100% 14%;
+    --card: 300 24% 12%;
+    --card-foreground: 300 12% 96%;
+    --popover: 300 24% 12%;
+    --popover-foreground: 300 12% 96%;
+    --primary-foreground: 300 24% 8%;
+    --secondary: 300 92% 24%;
+    --secondary-foreground: 300 12% 96%;
+    --muted-foreground: 300 18% 66%;
+    --accent: 300 100% 22%;
+    --accent-foreground: 300 12% 96%;
+    --destructive: 340 100% 64%;
+    --destructive-foreground: 300 12% 96%;
+    --input: 300 18% 20%;
+    --ring: 300 100% 14%;
+    --chart-1: 300 100% 14%;
+    --chart-2: 300 88% 24%;
+    --chart-3: 300 70% 34%;
+    --chart-4: 300 58% 28%;
+    --chart-5: 300 90% 20%;
+    --sidebar: 300 24% 10%;
+    --sidebar-foreground: 300 12% 96%;
+    --sidebar-primary: 300 100% 14%;
+    --sidebar-primary-foreground: 300 24% 8%;
+    --sidebar-accent: 300 90% 18%;
+    --sidebar-accent-foreground: 300 12% 96%;
+    --sidebar-border: 300 24% 16%;
+    --sidebar-ring: 300 100% 14%;
+    --sidebar-background: 300 24% 10%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
@@ -121,21 +118,43 @@ body {
     sans-serif;
   background-color: var(--background);
 }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family:
+    var(--font-geist-sans),
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  background-color: var(--background);
+}
+
 /* Light theme - study-friendly workspace */
 .theme-shell {
-  background: #f8fafc;
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.12), hsl(var(--primary) / 0.06));
+  border: 1px solid hsl(var(--border));
   border-radius: 1.5rem;
-  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.22);
+  box-shadow: 0 20px 60px hsl(var(--primary) / 0.08);
 }
 
 .dark .theme-shell {
   background:
-    radial-gradient(
-      circle at top center,
-      rgba(59, 130, 246, 0.2),
-      transparent 28%
-    ),
-    linear-gradient(180deg, #0f172a 0%, #020617 100%);
+    radial-gradient(circle at top center, hsl(var(--primary) / 0.24), transparent 28%),
+    linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 100%);
+  border-color: hsl(var(--border));
   border-radius: 1.5rem;
 }
 
@@ -145,150 +164,144 @@ body {
 
 .dark .theme-grid {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(hsl(var(--foreground) / 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.08) 1px, transparent 1px);
   background-size: 18px 18px;
 }
 
 .theme-nav {
-  background: rgba(255, 255, 255, 0.92);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+  background: hsl(var(--card) / 0.9);
+  border-bottom: 1px solid hsl(var(--border));
   backdrop-filter: blur(14px);
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
 }
 
 .dark .theme-nav {
-  background: rgba(15, 23, 42, 0.92);
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  background: hsl(var(--popover) / 0.92);
+  border-bottom: 1px solid hsl(var(--border));
   backdrop-filter: blur(14px);
   border-bottom-left-radius: 1rem;
   border-bottom-right-radius: 1rem;
 }
 
 .theme-terminal {
-  background: #ffffff;
-  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 1.25rem;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+  box-shadow: 0 18px 40px hsl(var(--primary) / 0.08);
 }
 
 .dark .theme-terminal {
-  background: #091324;
-  border: 1px solid rgba(148, 163, 184, 0.08);
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
   border-radius: 1.25rem;
-  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 20px 80px hsl(var(--primary) / 0.35);
 }
 
 .theme-card {
-  background: #ffffff;
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
   border-radius: 1.5rem;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+  box-shadow: 0 12px 30px hsl(var(--primary) / 0.06);
 }
 
 .dark .theme-card {
-  background: rgba(15, 23, 42, 0.92);
-  border: 1px solid rgba(148, 163, 184, 0.1);
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
   border-radius: 1.5rem;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 20px 80px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 20px 80px hsl(var(--primary) / 0.18);
 }
 
 .theme-button-primary {
-  background: #2563eb;
+  background: #360D36;
   color: #ffffff;
-  border: 1px solid #2563eb;
+  border: 1px solid #360D36;
   border-radius: 9999px;
-  box-shadow: 0 16px 36px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 12px 25px rgba(54,13,54,0.18);
 }
 
 .theme-button-primary:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
+  background: #360D36;
+  border-color: #360D36;
 }
 
 .theme-button-secondary {
-  background: rgba(37, 99, 235, 0.08);
-  color: #1f2937;
-  border: 1px solid rgba(37, 99, 235, 0.18);
+  background: hsl(var(--secondary));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
   border-radius: 9999px;
-  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.18);
 }
 
 .theme-button-secondary:hover {
-  background: rgba(37, 99, 235, 0.14);
-  border-color: rgba(37, 99, 235, 0.24);
+  background: hsl(var(--accent));
+  color: hsl(var(--primary-foreground));
 }
 
 .dark .theme-button-secondary {
-  color: #cbd5e1;
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
 }
 
 .dark .theme-button-secondary:hover {
-  background: rgba(148, 163, 184, 0.12);
+  background: hsl(var(--accent) / 0.16);
 }
 
-/* Light theme text colors */
 .theme-label {
-  color: #000000;
+  color: hsl(var(--muted-foreground));
   font-size: 0.75rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
 .dark .theme-label {
-  color: rgba(203, 213, 225, 0.9);
+  color: hsl(var(--muted-foreground));
 }
 
 .theme-heading-accent {
-  color: #000000;
-  border-bottom: 2px solid #000000;
+  color: hsl(var(--primary));
+  border-bottom: 2px solid hsl(var(--primary));
   display: inline-block;
 }
 
 .dark .theme-heading-accent {
-  color: #d4a04a;
-  border-bottom-color: #d4a04a;
+  color: hsl(var(--accent));
+  border-bottom-color: hsl(var(--accent));
 }
 
-/* Profile page — item carousel scroll behavior is now handled via JS
-   (see ItemCarousel in admin/profile/page.tsx). No CSS animation needed. */
-
-/* Hides the scrollbar visually while keeping the element programmatically
-   and touch/drag scrollable (needed for the carousel's auto-scroll + buttons). */
-.no-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+/* Add to your existing globals.css */
+@layer base {
+  :root {
+    --sidebar-background: 300 30% 98%;
+    --sidebar-foreground: 300 24% 16%;
+    --sidebar-primary: 300 100% 14%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 300 100% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 300 40% 91%;
+    --sidebar-ring: 300 100% 17%;
+  }
+
+  .dark {
+    --sidebar-background: 300 24% 10%;
+    --sidebar-foreground: 300 12% 96%;
+    --sidebar-primary: 300 100% 14%;
+    --sidebar-primary-foreground: 300 24% 8%;
+    --sidebar-accent: 300 90% 18%;
+    --sidebar-accent-foreground: 300 12% 96%;
+    --sidebar-border: 300 24% 16%;
+    --sidebar-ring: 300 100% 14%;
+  }
 }
-
-/* ── Form field text visibility (bulletproof) ────────────────────────────────
-   Ensures typed/selected text is always readable inside form fields,
-   including within modals/sheets portaled to <body>. Plain CSS + !important
-   so it cannot be overridden by utility ordering or specificity issues.
-
-   -webkit-text-fill-color is the key property: if anything sets it to
-   transparent, the typed characters disappear while the caret still blinks.
-   Setting it to currentColor makes text follow the `color` rule below. */
-input,
-textarea,
-select {
-  color: #0f172a !important;
-  caret-color: #0f172a !important;
-  -webkit-text-fill-color: currentColor !important;
-}
-
-.dark input,
-.dark textarea,
-.dark select {
-  color: #f8fafc !important;
-  caret-color: #f8fafc !important;
-  -webkit-text-fill-color: currentColor !important;
-}
-

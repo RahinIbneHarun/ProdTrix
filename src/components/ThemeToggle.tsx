@@ -18,10 +18,10 @@ export function ThemeToggle() {
       id="theme-toggle"
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className={`relative flex h-9 w-9 items-center justify-center border transition-all duration-300 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
+      className={`relative flex h-9 w-9 items-center justify-center border transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
         isDark 
-          ? "border-white/10 bg-white/5 text-white/70 hover:text-white" 
-          : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+          ? "border-border bg-card text-foreground hover:bg-accent hover:text-primary" 
+          : "border-border bg-card text-foreground hover:bg-secondary hover:text-primary"
       }`}
     >
       <svg
