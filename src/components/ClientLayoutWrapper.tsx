@@ -1,6 +1,8 @@
 "use client";
 
 import { SidebarNav } from "@/components/sidebar-nav";
+import { BrandLogo } from "@/components/brand-logo";
+import { SiteFooter } from "@/components/site-footer";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { isPathAllowedForRoles } from "@/lib/auth/route-permissions";
@@ -90,9 +92,10 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                             paddingRight: "10%",
                         }}
                     >
-                        <div className="flex items-center">
-                            <span className="text-[20px] font-medium tracking-tight text-foreground">ProdRrix</span>
-                        </div>
+                        <Link href="/Home" className="flex items-center gap-3">
+                            <BrandLogo className="h-9 w-9" />
+                            <span className="text-[20px] font-medium tracking-tight text-foreground">ProdTrix</span>
+                        </Link>
 
                         <nav className="flex items-center gap-4 text-[15px] font-medium text-muted-foreground">
                             <Link href="/Home" className="transition-colors hover:text-foreground">
@@ -133,6 +136,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                         {children}
                     </div>
                 </main>
+                <SiteFooter />
             </div>
         );
     }
@@ -211,8 +215,8 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                 <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-border bg-card">
                     <div className="flex h-16 items-center border-b border-border px-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-8 w-8 items-center justify-center border border-border bg-transparent text-[8px] font-bold tracking-[0.18em] text-foreground">Study</div>
-                            <span className="text-lg font-medium tracking-tight text-foreground">Study Hub</span>
+                            <BrandLogo className="h-8 w-8 rounded-md" />
+                            <span className="text-lg font-medium tracking-tight text-foreground">ProdTrix</span>
                         </div>
                     </div>
                     <div className="flex-1 overflow-y-auto px-4">
@@ -233,8 +237,8 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                             <div className="flex h-full flex-col bg-card shadow-xl">
                                 <div className="flex h-16 items-center justify-between border-b border-border px-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-8 w-8 items-center justify-center border border-border bg-transparent text-[8px] font-bold tracking-[0.18em] text-foreground">Study</div>
-                                        <span className="text-lg font-medium tracking-tight text-foreground">Study Hub</span>
+                                        <BrandLogo className="h-8 w-8 rounded-md" />
+                                        <span className="text-lg font-medium tracking-tight text-foreground">ProdTrix</span>
                                     </div>
                                     <button onClick={() => setMobileMenuOpen(false)} className="rounded-md p-1 hover:bg-secondary">
                                         <X className="h-5 w-5 text-foreground" />
@@ -253,6 +257,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                     <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-card/95" style={{ paddingLeft: "1rem", paddingRight: "2rem" }}>
                         {/* Breadcrumbs */}
                         <div className="flex items-center gap-2">
+                            <BrandLogo className="h-8 w-8 rounded-md md:hidden" />
                             <nav className="flex items-center gap-1 text-sm">
                                 {breadcrumbs.map((crumb, index) => (
                                     <div key={crumb.href} className="flex items-center gap-1">
@@ -280,7 +285,7 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                                     </Link>
                                     <ThemeToggle />
                                     <button className="flex h-8 items-center justify-center rounded-full border border-border bg-secondary px-4">
-                                        <span className="text-sm font-medium text-foreground">{authUser?.user?.profile?.name ?? authUser?.user?.username ?? "User"}</span>
+                                        <span className="text-sm font-medium text-white">{authUser?.user?.profile?.name ?? authUser?.user?.username ?? "User"}</span>
                                     </button>
                                     <a href="/api/auth/logout" title="Sign out" className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-colors hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive">
                                         <LogOut className="h-3.5 w-3.5" />

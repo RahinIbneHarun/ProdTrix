@@ -55,7 +55,7 @@
     --card-foreground: 300 12% 96%;
     --popover: 300 24% 12%;
     --popover-foreground: 300 12% 96%;
-    --primary-foreground: 300 24% 8%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 300 92% 24%;
     --secondary-foreground: 300 12% 96%;
     --muted-foreground: 300 18% 66%;
@@ -101,6 +101,19 @@
   margin: 0;
   padding: 0;
 
+}
+
+@keyframes scroll-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.scroll-track {
+  animation: scroll-marquee 18s linear infinite;
 }
 
 html,
@@ -228,18 +241,18 @@ body {
 
 .theme-button-secondary {
   background: hsl(var(--secondary));
-  color: hsl(var(--foreground));
+  color: #ffffff;
   border: 1px solid hsl(var(--border));
   border-radius: 9999px;
 }
 
 .theme-button-secondary:hover {
   background: hsl(var(--accent));
-  color: hsl(var(--primary-foreground));
+  color: #ffffff;
 }
 
 .dark .theme-button-secondary {
-  color: hsl(var(--foreground));
+  color: #ffffff;
   border: 1px solid hsl(var(--border));
 }
 

@@ -66,12 +66,12 @@ export default function Home() {
         {/* Left */}
         <div className="max-w-2xl space-y-8">
           <motion.div variants={itemVariants} className="theme-label">
-            ● PRODTRIX PLATFORM
+            ● ProdTrix PLATFORM
           </motion.div>
 
           <motion.div variants={itemVariants} className="space-y-2">
             <h1 className="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.05] text-foreground">
-              Prodtrix brings
+              ProdTrix brings
               <br />
               clarity to every
               <br />
@@ -91,13 +91,13 @@ export default function Home() {
           <motion.div variants={itemVariants} className="flex flex-wrap gap-3">
             <Link
               href="/signup"
-              className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
             >
               Get started
             </Link>
             <Link
               href="/support"
-              className="inline-flex items-center justify-center rounded-full border border-border bg-background/80 px-5 py-3 text-sm font-medium text-foreground transition hover:bg-accent/10"
+              className="inline-flex items-center justify-center rounded-full border border-primary bg-primary/85 px-5 py-3 text-sm font-medium text-white transition hover:bg-primary"
             >
               Explore support
             </Link>
@@ -113,7 +113,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(54,13,54,0.18),transparent_55%)]" />
               <div className="relative z-10">
                 <p className="font-semibold text-foreground">
-                  Prodtrix brings a focused academic support experience to every
+                  ProdTrix brings a focused academic support experience to every
                   student and department.
                 </p>
                 <p className="mt-2">
@@ -149,7 +149,7 @@ export default function Home() {
               <span className="w-3 h-3 rounded-full bg-muted" />
               <span className="w-3 h-3 rounded-full bg-muted" />
               <span className="ml-4 text-sm text-muted-foreground">
-                prodtrix-cli
+                ProdTrix CLI
               </span>
             </div>
 
@@ -218,7 +218,7 @@ export default function Home() {
                 <span className="h-3 w-3 rounded-full bg-muted" />
                 <span className="h-3 w-3 rounded-full bg-muted" />
                 <span className="ml-3 text-xs text-muted-foreground">
-                  prodtrix-cli
+                  ProdTrix CLI
                 </span>
                 <span className="ml-auto font-mono text-[11px] text-muted-foreground/70">
                   0{index + 1}
