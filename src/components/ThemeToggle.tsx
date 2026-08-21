@@ -20,7 +20,7 @@ export function ThemeToggle() {
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className={`relative flex h-9 w-9 items-center justify-center border transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
         isDark 
-          ? "border-border bg-card text-foreground hover:bg-accent hover:text-primary" 
+          ? "border-border bg-card text-foreground hover:bg-accent hover:text-primary"
           : "border-border bg-card text-foreground hover:bg-secondary hover:text-primary"
       }`}
     >

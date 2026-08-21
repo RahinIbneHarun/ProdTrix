@@ -224,9 +224,7 @@ export function SidebarNav({
                 )}
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-muted-foreground">
-                    {item.icon}
-                  </span>
+                  <span className="text-muted-foreground">{item.icon}</span>
                   <span>{item.title}</span>
                 </div>
 
@@ -258,8 +256,7 @@ export function SidebarNav({
                             "hover:bg-secondary",
                             isActive(subitem.href) &&
                               "bg-secondary text-foreground",
-                            !isActive(subitem.href) &&
-                              "text-foreground",
+                            !isActive(subitem.href) && "text-foreground",
                           )}
                         >
                           <span
