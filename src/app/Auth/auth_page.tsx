@@ -35,7 +35,7 @@ export default function AuthPage({ mode = "signup" }: AuthPageProps) {
     }
 
     sessionStorage.setItem("prodtrix-demo-authenticated", "true");
-    router.push("/Home");
+    router.push("/Home/profile");
   };
 
   const containerVariants: Variants = {
