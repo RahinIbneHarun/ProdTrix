@@ -198,7 +198,7 @@ export function SidebarNav({
   if (allowedMenuItems.length === 0) {
     return (
       <nav className={cn("flex flex-col gap-1 p-3", className)}>
-        <p className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+        <p className="px-3 py-2 text-sm text-muted-foreground">
           No menu available for your role.
         </p>
       </nav>
@@ -219,13 +219,12 @@ export function SidebarNav({
                 onClick={() => toggleSubmenu(item.title)}
                 className={cn(
                   "flex items-center justify-between rounded-md px-3 py-2.5 text-sm font-medium transition-all",
-                  "hover:bg-gray-100",
-                  "dark:hover:bg-gray-100 dark:hover:text-gray-900",
-                  "text-gray-700 dark:text-white",
+                  "hover:bg-secondary",
+                  "text-foreground",
                 )}
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-gray-600 dark:text-white">
+                  <span className="text-muted-foreground">
                     {item.icon}
                   </span>
                   <span>{item.title}</span>
@@ -234,7 +233,7 @@ export function SidebarNav({
                 <motion.div
                   animate={{ rotate: isOpen ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
-                  className="text-gray-600 dark:text-white"
+                  className="text-muted-foreground"
                 >
                   <ChevronDown className="h-3 w-3" />
                 </motion.div>
@@ -256,20 +255,19 @@ export function SidebarNav({
                           href={subitem.href}
                           className={cn(
                             "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-all",
-                            "hover:bg-gray-100",
-                            "dark:hover:bg-gray-100 dark:hover:text-gray-900",
+                            "hover:bg-secondary",
                             isActive(subitem.href) &&
-                              "bg-gray-100 text-gray-900 dark:bg-gray-100 dark:text-gray-900",
+                              "bg-secondary text-foreground",
                             !isActive(subitem.href) &&
-                              "text-gray-700 dark:text-white",
+                              "text-foreground",
                           )}
                         >
                           <span
                             className={cn(
                               "transition-colors",
                               isActive(subitem.href)
-                                ? "text-gray-900 dark:text-gray-900"
-                                : "text-gray-600 dark:text-white",
+                                ? "text-primary"
+                                : "text-muted-foreground",
                             )}
                           >
                             {subitem.icon}
@@ -291,12 +289,11 @@ export function SidebarNav({
             href={item.href!}
             className={cn(
               "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-all",
-              "hover:bg-gray-100",
-              "dark:hover:bg-gray-100 dark:hover:text-gray-900",
-              "text-gray-700 dark:text-white",
+              "hover:bg-secondary",
+              "text-foreground",
             )}
           >
-            <span className="text-gray-600 dark:text-white">{item.icon}</span>
+            <span className="text-muted-foreground">{item.icon}</span>
             <span>{item.title}</span>
           </Link>
         );

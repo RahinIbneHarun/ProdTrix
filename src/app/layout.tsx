@@ -18,8 +18,8 @@ const hedvig = Hedvig_Letters_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Podtrix",
-  description: "",
+  title: "ProdTrix",
+  description: "A study-focused platform for outcome-based education and academic workflow",
 };
 
 export default function RootLayout({
@@ -42,7 +42,7 @@ export default function RootLayout({
       <body className={GeistSans.className}>
         <ReactQueryProvider>
           <ThemeProvider>
-            <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-black dark:border-gray-700 dark:border-t-white" /></div>}>
+            <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-border border-t-primary" /></div>}>
               <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
             </Suspense>
           </ThemeProvider>
