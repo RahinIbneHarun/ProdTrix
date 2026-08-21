@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  demoAuthUser,
+  demoSessionCookie,
+  hasValidDemoCredentials,
+} from "@/lib/demo-auth";
 
 const AUTH_SERVER_URL =
-  process.env.NEXT_PUBLIC_AUTH_SERVER || "http://localhost:9000";
+  process.env.NEXT_PUBLIC_AUTH_SERVER ||
+  process.env.NEXT_PUBLIC_AUTH_SERVER_BASE_URL ||
+  "http://localhost:9000";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,17 +22,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(`${AUTH_SERVER_URL}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        email: body.email,
-        password: body.password,
-      }),
-    });
+    let response: Response;
+
+    try {
+      response = await fetch(`${AUTH_SERVER_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email: body.email,
+          password: body.password,
+        }),
+      });
+    } catch {
+      if (hasValidDemoCredentials(body.email, body.password)) {
+        const demoResponse = NextResponse.json(
+          { authenticated: true, user: demoAuthUser },
+          { status: 200 },
+        );
+        demoResponse.cookies.set(demoSessionCookie);
+        return demoResponse;
+      }
+
+      return NextResponse.json(
+        {
+          error: "Login service is unavailable",
+          message: "Start the auth server or use the local demo account.",
+        },
+        { status: 503 },
+      );
+    }
 
     const data = await response.json();
 

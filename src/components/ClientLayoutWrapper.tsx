@@ -26,7 +26,7 @@ export default function ClientLayoutWrapper({
   // Handle redirects for /admin and /supervisor
   useEffect(() => {
     if (pathname === "/admin") {
-      router.push("/admin/dashboard");
+      router.push("/admin/profile");
     } else if (pathname === "/supervisor") {
       router.push("/supervisor/dashboard");
     }
@@ -43,7 +43,6 @@ export default function ClientLayoutWrapper({
     pathname.startsWith("/support") ||
     pathname.startsWith("/about") ||
     pathname.startsWith("/forgot-password") ||
-    pathname.startsWith("/admin/profile") ||
     pathname.startsWith("/feed") ||
     pathname.startsWith("/book-notes");
 
@@ -83,8 +82,8 @@ export default function ClientLayoutWrapper({
 
       // Only redirect to login for protected routes
       if (!isPublicShellRoute) {
-        const next = encodeURIComponent(pathname || "/admin/dashboard");
-        window.location.replace(`/api/auth/login?next=${next}`);
+        const next = encodeURIComponent(pathname || "/admin/profile");
+        window.location.replace(`/login?next=${next}`);
       }
     };
 

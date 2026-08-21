@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const AUTH_SERVER_URL =
-  process.env.NEXT_PUBLIC_AUTH_SERVER || "http://localhost:9000";
+  process.env.NEXT_PUBLIC_AUTH_SERVER ||
+  process.env.NEXT_PUBLIC_AUTH_SERVER_BASE_URL ||
+  "http://localhost:9000";
 
 export async function POST(request: NextRequest) {
   try {

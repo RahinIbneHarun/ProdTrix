@@ -168,12 +168,7 @@ export default function AuthPage({ mode = "signup" }: AuthPageProps) {
 
       // Redirect to dashboard after successful login/signup
       setTimeout(() => {
-        if (isLogin) {
-          router.push("/admin/dashboard");
-        } else {
-          // For signup, redirect to login or directly to dashboard
-          router.push("/admin/dashboard");
-        }
+        router.push("/admin/profile");
       }, 1500);
     } catch (err: any) {
       console.error("Auth error:", err);
