@@ -110,13 +110,12 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
                                 <Link href="/support" className="theme-button-primary px-4 py-2 font-medium transition-all">
                                     Support
                                 </Link>
-                                <Link href="/login" className="theme-button-primary px-4 py-2 font-medium transition-all">
-                                    Login
-                                </Link>
+                                {pathname !== "/login" && (
+                                    <Link href="/login" className="theme-button-primary px-4 py-2 font-medium transition-all">
+                                        Login
+                                    </Link>
+                                )}
 
-                                <Link href="/signup" className="theme-button-secondary px-4 py-2 font-medium transition-all">
-                                    Create account
-                                </Link>
                             </div>
 
                             <ThemeToggle />

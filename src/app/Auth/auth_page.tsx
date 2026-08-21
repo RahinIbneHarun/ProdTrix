@@ -1,6 +1,8 @@
 "use client";
 
 import { motion, Variants } from "framer-motion";
+import { MacWindowControls } from "@/components/mac-window-controls";
+import Link from "next/link";
 
 type AuthPageProps = {
   mode?: "signup" | "login";
@@ -60,11 +62,12 @@ export default function AuthPage({ mode = "signup" }: AuthPageProps) {
           </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 pt-2">
-            {!isLogin && (
-              <button className="theme-button-secondary px-6 py-3 font-medium transition-all">
-                Sign in instead
-              </button>
-            )}
+            <Link
+              href={isLogin ? "/signup" : "/login"}
+              className="theme-button-secondary inline-flex items-center px-6 py-3 font-medium transition-all"
+            >
+              {isLogin ? "Create account" : "Sign in instead"}
+            </Link>
           </motion.div>
 
           {/* Highlights removed per user request: 24/7, Secure, Fast */}
@@ -72,10 +75,8 @@ export default function AuthPage({ mode = "signup" }: AuthPageProps) {
 
         <motion.div variants={itemVariants} className="w-full">
           <div className="theme-terminal ml-auto w-full max-w-2xl rounded-[1.6rem] border border-border bg-card/90 shadow-[0_30px_80px_-30px_hsl(var(--primary)/0.45)] backdrop-blur">
-            <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-              <span className="h-3 w-3 rounded-full bg-muted" />
-              <span className="h-3 w-3 rounded-full bg-muted" />
-              <span className="h-3 w-3 rounded-full bg-muted" />
+            <div className="flex items-center border-b border-border px-4 py-3">
+              <MacWindowControls />
               <span className="ml-4 text-sm text-muted-foreground">
                 {isLogin ? "account-access" : "account-setup"}
               </span>

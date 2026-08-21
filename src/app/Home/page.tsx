@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion, Variants } from "framer-motion";
+import { MacWindowControls } from "@/components/mac-window-controls";
 
 const supportJourney = [
   {
@@ -93,7 +94,7 @@ export default function Home() {
               href="/signup"
               className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-medium text-white transition hover:opacity-90"
             >
-              Get started
+              Create account
             </Link>
             <Link
               href="/support"
@@ -144,10 +145,8 @@ export default function Home() {
         {/* Right */}
         <motion.div variants={itemVariants} className="w-full">
           <div className="theme-terminal w-full max-w-3xl ml-auto">
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
-              <span className="w-3 h-3 rounded-full bg-muted" />
-              <span className="w-3 h-3 rounded-full bg-muted" />
-              <span className="w-3 h-3 rounded-full bg-muted" />
+            <div className="flex items-center px-4 py-3 border-b border-border">
+              <MacWindowControls />
               <span className="ml-4 text-sm text-muted-foreground">
                 ProdTrix CLI
               </span>
@@ -213,10 +212,8 @@ export default function Home() {
               }`}
             >
               <div className="absolute left-0 top-0 h-full w-1 bg-primary/70 opacity-60 transition-opacity duration-300 group-hover:opacity-100" />
-              <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-                <span className="h-3 w-3 rounded-full bg-muted" />
-                <span className="h-3 w-3 rounded-full bg-muted" />
-                <span className="h-3 w-3 rounded-full bg-muted" />
+              <div className="flex items-center border-b border-border px-4 py-3">
+                <MacWindowControls />
                 <span className="ml-3 text-xs text-muted-foreground">
                   ProdTrix CLI
                 </span>
