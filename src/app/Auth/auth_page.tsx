@@ -3,6 +3,8 @@
 import { motion, Variants } from "framer-motion";
 import { MacWindowControls } from "@/components/mac-window-controls";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type AuthPageProps = {
   mode?: "signup" | "login";
@@ -10,6 +12,31 @@ type AuthPageProps = {
 
 export default function AuthPage({ mode = "signup" }: AuthPageProps) {
   const isLogin = mode === "login";
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+
+    if (!isLogin) {
+      setError("Use the demo account on the Login page for now.");
+      return;
+    }
+
+    if (
+      email.toLowerCase() !== "demo@prodtrix.local" ||
+      password !== "ProdTrix@2026"
+    ) {
+      setError("Use the provided ProdTrix demo email and password.");
+      return;
+    }
+
+    sessionStorage.setItem("prodtrix-demo-authenticated", "true");
+    router.push("/Home");
+  };
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -82,7 +109,7 @@ export default function AuthPage({ mode = "signup" }: AuthPageProps) {
               </span>
             </div>
 
-            <div className="space-y-4 p-6 sm:p-8">
+            <form onSubmit={handleSubmit} className="space-y-4 p-6 sm:p-8">
               {!isLogin && (
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">
@@ -103,6 +130,9 @@ export default function AuthPage({ mode = "signup" }: AuthPageProps) {
                 <input
                   type="email"
                   placeholder="alex@university.edu"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
                   className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
@@ -114,6 +144,9 @@ export default function AuthPage({ mode = "signup" }: AuthPageProps) {
                 <input
                   type="password"
                   placeholder="••••••••"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  required
                   className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                 />
               </div>
@@ -126,15 +159,27 @@ export default function AuthPage({ mode = "signup" }: AuthPageProps) {
                   <input
                     type="password"
                     placeholder="••••••••"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    required
                     className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
               )}
 
-              <button className="theme-button-primary mt-2 w-full px-6 py-3 font-medium transition-all">
+              {error && (
+                <p className="rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm text-muted-foreground">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="theme-button-primary mt-2 w-full px-6 py-3 font-medium transition-all"
+              >
                 {isLogin ? "Login" : "Create account"}
               </button>
-            </div>
+            </form>
           </div>
         </motion.div>
       </motion.div>
