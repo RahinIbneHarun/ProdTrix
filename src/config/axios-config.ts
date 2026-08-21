@@ -16,7 +16,7 @@ type AuthCookieResponse = {
 };
 
 export const API_SERVICE = axios.create({
-  baseURL: "/api/backend-proxy",
+  baseURL: "/backend-api/:path*",
   withCredentials: true,
 });
 
