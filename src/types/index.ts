@@ -1,36 +1,29 @@
-export interface Author {
+export interface PostAuthor {
   id: string;
   name: string;
-  avatarUrl?: string;
-  status: string;
-  isVerified: boolean;
+  role?: string; // "Full Stack Engineer"
+  avatar?: string;
 }
 
-export interface AcademicMeta {
-  topicName: string;
-  className: string;
-  chapter: string;
-}
-
-export interface PostComment {
-  id: string;
-  authorName: string;
-  text: string;
-  imageUrl?: string;
-  createdAt: string;
+export interface PostMedia {
+  url: string;
+  title?: string;
 }
 
 export interface Post {
   id: string;
-  author: Author;
-  academicMeta: AcademicMeta;
+  author: PostAuthor;
+  title?: string;
   content: string;
-  thumbnailUrl?: string;
-  likesCount: number;
-  commentsCount: number;
-  sharesCount: number;
-  isLiked?: boolean;
-  isSaved?: boolean;
-  createdAt: string;
-  comments?: PostComment[];
+  timeAgo?: string;
+  likes?: number;
+  commentsCount?: number;
+  shares?: number;
+  views?: number;
+  media?: PostMedia;
+  academicMeta?: {
+    topic?: string;
+    class?: string;
+    chapter?: string;
+  };
 }
