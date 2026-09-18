@@ -100,7 +100,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-
 }
 
 @keyframes scroll-marquee {
@@ -157,7 +156,11 @@ body {
 
 /* Light theme - study-friendly workspace */
 .theme-shell {
-  background: linear-gradient(135deg, hsl(var(--primary) / 0.12), hsl(var(--primary) / 0.06));
+  background: linear-gradient(
+    135deg,
+    hsl(var(--primary) / 0.12),
+    hsl(var(--primary) / 0.06)
+  );
   border: 1px solid hsl(var(--border));
   border-radius: 1.5rem;
   box-shadow: 0 20px 60px hsl(var(--primary) / 0.08);
@@ -165,8 +168,16 @@ body {
 
 .dark .theme-shell {
   background:
-    radial-gradient(circle at top center, hsl(var(--primary) / 0.24), transparent 28%),
-    linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 100%);
+    radial-gradient(
+      circle at top center,
+      hsl(var(--primary) / 0.24),
+      transparent 28%
+    ),
+    linear-gradient(
+      180deg,
+      hsl(var(--background)) 0%,
+      hsl(var(--background)) 100%
+    );
   border-color: hsl(var(--border));
   border-radius: 1.5rem;
 }
@@ -227,16 +238,16 @@ body {
 }
 
 .theme-button-primary {
-  background: #360D36;
+  background: #360d36;
   color: #ffffff;
-  border: 1px solid #360D36;
+  border: 1px solid #360d36;
   border-radius: 9999px;
-  box-shadow: 0 12px 25px rgba(54,13,54,0.18);
+  box-shadow: 0 12px 25px rgba(54, 13, 54, 0.18);
 }
 
 .theme-button-primary:hover {
-  background: #360D36;
-  border-color: #360D36;
+  background: #360d36;
+  border-color: #360d36;
 }
 
 .theme-button-secondary {
@@ -317,4 +328,44 @@ body {
     --sidebar-border: 300 24% 16%;
     --sidebar-ring: 300 100% 14%;
   }
+}
+.tl-container {
+  --color-background: #0f1115 !important;
+  --color-low: #0f1115 !important;
+  --color-low-border: #1e2228 !important;
+  --color-grid: #1e2228 !important;
+  --color-panel: #1e1e24 !important;
+  --color-panel-contrast: #0f1115 !important;
+  --color-panel-overlay: rgba(30, 30, 36, 0.95) !important;
+  --color-text: #e8e8e8 !important;
+  --color-text-1: #d1d5db !important;
+  --color-text-2: #9ca3af !important;
+  --color-text-3: #6b7280 !important;
+  --color-selected: #3b82f6 !important;
+  --color-selection-stroke: #3b82f6 !important;
+  --color-selection-fill: rgba(59, 130, 246, 0.15) !important;
+  --color-focus: #3b82f6 !important;
+  --color-hint: #6b7280 !important;
+  --color-warning: #f59e0b !important;
+  --color-danger: #ef4444 !important;
+}
+
+/* Force the actual canvas SVG to be dark */
+.tl-background {
+  background-color: #0f1115 !important;
+}
+
+.tl-canvas {
+  background-color: #0f1115 !important;
+}
+
+/* Ensure the tldraw container fills its parent without weird sizing */
+.tl-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Remove tldraw's white "watermark" area behind the canvas */
+.tl-html-container {
+  background-color: #0f1115 !important;
 }

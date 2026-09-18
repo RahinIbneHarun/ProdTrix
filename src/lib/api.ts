@@ -1,4 +1,4 @@
-import { Post, PostComment } from "@/types";
+import { Post, PostComment } from "@/types/index";
 
 const API_BASE = "/backend-api";
 const TIMEOUT = 3000; // 3 seconds timeout

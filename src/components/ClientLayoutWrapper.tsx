@@ -44,7 +44,8 @@ export default function ClientLayoutWrapper({
     pathname.startsWith("/about") ||
     pathname.startsWith("/forgot-password") ||
     pathname.startsWith("/feed") ||
-    pathname.startsWith("/book-notes");
+    pathname.startsWith("/book-notes") ||
+    pathname.startsWith("/drawPage");
 
   useEffect(() => {
     const initAuth = async () => {
@@ -89,6 +90,11 @@ export default function ClientLayoutWrapper({
 
     initAuth();
   }, [isPublicShellRoute, pathname, router]);
+
+  if (pathname.startsWith("/drawPage")) {
+    return <div className="h-screen w-screen overflow-hidden">{children}</div>;
+  }
+
   if (!isPublicShellRoute && !isAuthReady) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
