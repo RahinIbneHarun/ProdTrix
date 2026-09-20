@@ -41,6 +41,10 @@ export const protectedRoutePermissions: RoutePermission[] = [
     ],
   },
   {
+    path: "/admin/approval-requests",
+    roles: [USER_ROLES.ADMIN],
+  },
+  {
     path: "/supervisor",
     roles: [
       USER_ROLES.SUPERVISOR,

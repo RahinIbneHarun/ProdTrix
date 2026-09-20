@@ -116,7 +116,7 @@ const menuItems: MenuItem[] = [
         title: "Approval Requests",
         href: "/admin/approval-requests",
         icon: <AlertTriangle className="h-3 w-3" />,
-        roles: [USER_ROLES.ADMIN, USER_ROLES.THESIS_ADMIN],
+        roles: [USER_ROLES.ADMIN],
       },
     ],
   },

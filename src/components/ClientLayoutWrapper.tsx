@@ -201,7 +201,7 @@ export default function ClientLayoutWrapper({
             {children}
           </div>
         </main>
-        <SiteFooter />
+        {!pathname.startsWith("/feed") && <SiteFooter />}
       </div>
     );
   }
