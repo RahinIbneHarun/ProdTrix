@@ -5,6 +5,8 @@ import { Upload, ZoomIn, ZoomOut, RotateCcw, Share2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import type { Editor } from "tldraw";
 import type { UploadedDoc } from "@/types/Canvas";
+import Image from "next/image";
+
 
 interface TopBarProps {
   onFileUpload: (doc: UploadedDoc) => void;
@@ -68,7 +70,7 @@ export default function TopBar({ onFileUpload, editor }: TopBarProps) {
               <path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" />
             </svg>
           </div>
-          DrawLab
+          <span>Prodtrix</span>
         </div>
         <div className="flex gap-4 text-sm">
           <button className="hover:text-white transition">New</button>

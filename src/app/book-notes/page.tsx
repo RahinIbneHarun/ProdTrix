@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { Search, Filter, Menu, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import {
@@ -13,22 +13,25 @@ import {
 import { Input } from "@/components/ui/input";
 import BookNoteForm, { type BookNoteInput } from "@/components/book-note-form";
 
-// ── Data ──────────────────────────────────────────────────────────────────────
-type BookNote = {
+// ── Data Types ────────────────────────────────────────────────────────────────
+export type BookNote = {
   id: string;
   title: string;
   description: string;
   image: string;
-  section: "academic" | "non-academic";
+  section: string; // Dynamic section/category name
+  className?: string;
+  chapter?: string;
 };
 
-const initialAcademicNotes: BookNote[] = [
+const initialNotes: BookNote[] = [
   {
     id: "acad-1",
     title: "Microcontrollers",
     description: "Timers, interrupts and embedded C programming fundamentals.",
     image: "https://picsum.photos/seed/microcontrollers/300/300",
     section: "academic",
+    className: "CSE Semester 8",
   },
   {
     id: "acad-2",
@@ -36,6 +39,7 @@ const initialAcademicNotes: BookNote[] = [
     description: "Professional responsibility and ethical decision making.",
     image: "https://picsum.photos/seed/engineering-ethics/300/300",
     section: "academic",
+    className: "CSE Semester 7",
   },
   {
     id: "acad-3",
@@ -43,16 +47,15 @@ const initialAcademicNotes: BookNote[] = [
     description: "Boolean algebra, combinational and sequential circuits.",
     image: "https://picsum.photos/seed/digital-logic/300/300",
     section: "academic",
+    className: "CSE Semester 7",
   },
-];
-
-const initialNonAcademicNotes: BookNote[] = [
   {
     id: "non-1",
     title: "Atomic Habits",
     description: "Tiny changes, remarkable results — habit building systems.",
     image: "https://picsum.photos/seed/atomic-habits/300/300",
     section: "non-academic",
+    className: "Self Development",
   },
   {
     id: "non-2",
@@ -60,6 +63,7 @@ const initialNonAcademicNotes: BookNote[] = [
     description: "A journey of following one's personal legend.",
     image: "https://picsum.photos/seed/the-alchemist/300/300",
     section: "non-academic",
+    className: "Literature",
   },
 ];
 
@@ -67,7 +71,6 @@ const initialNonAcademicNotes: BookNote[] = [
 function NoteCard({ item }: { item: BookNote }) {
   return (
     <div className="theme-card overflow-hidden rounded-2xl text-center transition-all hover:-translate-y-0.5">
-      {/* Picture */}
       <div className="relative h-36 w-full overflow-hidden bg-gray-100 dark:bg-white/5">
         <Image
           src={item.image}
@@ -79,11 +82,9 @@ function NoteCard({ item }: { item: BookNote }) {
       </div>
 
       <div className="flex flex-col gap-1.5 p-3">
-        {/* Title */}
         <h3 className="text-xs font-semibold text-black dark:text-white line-clamp-1">
           {item.title}
         </h3>
-        {/* Description */}
         <p className="text-[11px] leading-snug text-gray-500 dark:text-white/40 line-clamp-2">
           {item.description || "No description available."}
         </p>
@@ -92,30 +93,23 @@ function NoteCard({ item }: { item: BookNote }) {
   );
 }
 
-// ── Auto-scrolling Carousel (with manual nav buttons) ────────────────────────
+// ── Auto-scrolling Carousel ───────────────────────────────────────────────────
 function ItemCarousel({ items }: { items: BookNote[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
   const isWrappingRef = useRef(false);
   const resumeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Cards are rendered exactly once (no duplicates). Responsive widths show
-  // 2 (mobile) / 3 (sm) / 4 (lg) cards per view, with calc() accounting for
-  // the 14px gaps so a full set fits exactly on screen.
-  // Track: w-[calc(50%-7px)]  sm:w-[calc(33.333%-9.333px)]  lg:w-[calc(25%-10.5px)]
-
-  // Auto-scroll via rAF; when reaching the end, smoothly wrap back to start.
   useEffect(() => {
     const el = trackRef.current;
     if (!el || items.length === 0) return;
 
     let rafId: number;
-    const speed = 0.5; // px per frame (~30px/s)
+    const speed = 0.5;
 
     const wrapBack = () => {
       isWrappingRef.current = true;
       el.scrollTo({ left: 0, behavior: "smooth" });
-      // Resume forward scrolling once the wrap animation finishes
       if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
       resumeTimeoutRef.current = setTimeout(() => {
         isWrappingRef.current = false;
@@ -163,20 +157,17 @@ function ItemCarousel({ items }: { items: BookNote[] }) {
     pauseThenResume();
 
     const maxScroll = el.scrollWidth - el.clientWidth;
-    if (maxScroll <= 0) return; // not enough items to scroll
+    if (maxScroll <= 0) return;
 
-    // At the right edge and pressing right → wrap back to start
     if (direction === 1 && el.scrollLeft >= maxScroll - 1) {
       isWrappingRef.current = true;
       el.scrollTo({ left: 0, behavior: "smooth" });
-      if (resumeTimeoutRef.current) clearTimeout(resumeTimeoutRef.current);
       resumeTimeoutRef.current = setTimeout(() => {
         isWrappingRef.current = false;
       }, 600);
       return;
     }
 
-    // At the left edge and pressing left → jump to the end
     if (direction === -1 && el.scrollLeft <= 0) {
       el.scrollTo({ left: maxScroll, behavior: "smooth" });
       return;
@@ -189,7 +180,6 @@ function ItemCarousel({ items }: { items: BookNote[] }) {
 
   return (
     <div className="flex items-center gap-3">
-      {/* Prev button */}
       <button
         type="button"
         aria-label="Previous"
@@ -199,7 +189,6 @@ function ItemCarousel({ items }: { items: BookNote[] }) {
         <ChevronLeft className="h-4 w-4" />
       </button>
 
-      {/* Carousel track */}
       <div
         ref={trackRef}
         className="no-scrollbar flex flex-1 gap-3.5 overflow-x-auto scroll-smooth"
@@ -217,7 +206,6 @@ function ItemCarousel({ items }: { items: BookNote[] }) {
         ))}
       </div>
 
-      {/* Next button */}
       <button
         type="button"
         aria-label="Next"
@@ -230,7 +218,7 @@ function ItemCarousel({ items }: { items: BookNote[] }) {
   );
 }
 
-// ── Section ───────────────────────────────────────────────────────────────────
+// ── Section Container ─────────────────────────────────────────────────────────
 function NoteSection({
   title,
   notes,
@@ -242,18 +230,30 @@ function NoteSection({
 }) {
   return (
     <div className="space-y-3">
-      <h2 className="text-sm font-semibold text-black dark:text-white">
-        {title}
-      </h2>
-      <ItemCarousel items={notes} />
-      {/* Add Note button (opens the modal) */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold capitalize text-black dark:text-white">
+          {title.replace("-", " ")}
+        </h2>
+        <span className="text-xs text-gray-500 dark:text-white/40">
+          {notes.length} {notes.length === 1 ? "note" : "notes"}
+        </span>
+      </div>
+
+      {notes.length > 0 ? (
+        <ItemCarousel items={notes} />
+      ) : (
+        <div className="theme-card flex h-24 items-center justify-center rounded-2xl text-xs text-gray-400 dark:text-white/30">
+          No notes in this category yet.
+        </div>
+      )}
+
       <button
         type="button"
         onClick={onAdd}
         className="flex h-28 w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-300 dark:border-white/15 text-gray-400 dark:text-white/30 transition-colors hover:border-blue-400 hover:text-blue-500 dark:hover:border-blue-400 dark:hover:text-blue-400"
       >
         <Plus className="h-6 w-6" />
-        <span className="text-[11px] font-medium">Add Note</span>
+        <span className="text-[11px] font-medium">Add to {title.replace("-", " ")}</span>
       </button>
     </div>
   );
@@ -261,36 +261,68 @@ function NoteSection({
 
 // ── Main Page ─────────────────────────────────────────────────────────────────
 export default function BookNoteListPage() {
-  const [academicNotes, setAcademicNotes] = useState(initialAcademicNotes);
-  const [nonAcademicNotes, setNonAcademicNotes] = useState(initialNonAcademicNotes);
+  const [notes, setNotes] = useState<BookNote[]>(initialNotes);
   const [modalOpen, setModalOpen] = useState(false);
+  const [selectedSection, setSelectedSection] = useState<string>("academic");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Dynamically derive unique categories/sections from the notes array
+  const dynamicSections = useMemo(() => {
+    const rawSections = Array.from(new Set(notes.map((n) => n.section.toLowerCase())));
+    if (!rawSections.includes("academic")) rawSections.unshift("academic");
+    if (!rawSections.includes("non-academic")) rawSections.push("non-academic");
+    return rawSections;
+  }, [notes]);
+
+  // Dynamically collect options to populate BookNoteForm dropdowns
+  const dynamicBookOptions = useMemo(() => {
+    return Array.from(new Set(notes.map((n) => n.title).filter(Boolean)));
+  }, [notes]);
+
+  const dynamicClassOptions = useMemo(() => {
+    return Array.from(
+      new Set(notes.map((n) => n.className).filter(Boolean) as string[])
+    );
+  }, [notes]);
 
   const query = searchQuery.trim().toLowerCase();
   const isSearching = query.length > 0;
 
-  const matchingAcademic = academicNotes.filter((note) =>
-    note.title.toLowerCase().includes(query)
-  );
-  const matchingNonAcademic = nonAcademicNotes.filter((note) =>
-    note.title.toLowerCase().includes(query)
-  );
-  const matchingNotes = [...matchingAcademic, ...matchingNonAcademic];
+  const matchingNotes = useMemo(() => {
+    if (!isSearching) return [];
+    return notes.filter(
+      (note) =>
+        note.title.toLowerCase().includes(query) ||
+        note.description.toLowerCase().includes(query) ||
+        note.section.toLowerCase().includes(query) ||
+        note.className?.toLowerCase().includes(query)
+    );
+  }, [notes, query, isSearching]);
 
+  // Handle incoming dynamic form submission with binary local file
   const handleAddNote = (note: BookNoteInput) => {
+    // If an image file from local device was chosen, create a local preview blob URL
+    let finalImageUrl = `https://picsum.photos/seed/book-${Date.now()}/300/300`;
+    if (note.imageFile) {
+      finalImageUrl = URL.createObjectURL(note.imageFile);
+    }
+
     const newNote: BookNote = {
       id: `note-${Date.now()}`,
       title: note.title,
       description: note.description,
-      image: note.image,
-      section: note.section,
+      image: finalImageUrl,
+      section: note.section.toLowerCase(),
+      className: note.className,
+      chapter: note.chapter,
     };
 
-    if (note.section === "academic") {
-      setAcademicNotes((prev) => [...prev, newNote]);
-    } else {
-      setNonAcademicNotes((prev) => [...prev, newNote]);
-    }
+    setNotes((prev) => [newNote, ...prev]);
+  };
+
+  const openAddModal = (sectionName?: string) => {
+    if (sectionName) setSelectedSection(sectionName);
+    setModalOpen(true);
   };
 
   return (
@@ -326,13 +358,13 @@ export default function BookNoteListPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search notes by name..."
+            placeholder="Search by book name, chapter, class, or section..."
             className="pl-9"
           />
         </div>
 
+        {/* Dynamic Content: Search vs Grouped Sections */}
         {isSearching ? (
-          /* ── Search Results ── */
           <div className="space-y-3">
             <h2 className="text-sm font-semibold text-black dark:text-white">
               Search Results ({matchingNotes.length})
@@ -350,23 +382,20 @@ export default function BookNoteListPage() {
             )}
           </div>
         ) : (
-          /* ── Sections ── */
-          <>
-            <NoteSection
-              title="Academic"
-              notes={academicNotes}
-              onAdd={() => setModalOpen(true)}
-            />
-            <NoteSection
-              title="Non Academic"
-              notes={nonAcademicNotes}
-              onAdd={() => setModalOpen(true)}
-            />
-          </>
+          <div className="space-y-8">
+            {dynamicSections.map((sec) => (
+              <NoteSection
+                key={sec}
+                title={sec}
+                notes={notes.filter((n) => n.section.toLowerCase() === sec)}
+                onAdd={() => openAddModal(sec)}
+              />
+            ))}
+          </div>
         )}
       </div>
 
-      {/* Add Note Modal */}
+      {/* Dynamic Add Note Modal */}
       <Sheet open={modalOpen} onOpenChange={setModalOpen}>
         <SheetContent side="center" showCloseButton>
           <SheetHeader>
@@ -379,6 +408,9 @@ export default function BookNoteListPage() {
             <BookNoteForm
               modal
               submitLabel="Add Note"
+              bookOptions={dynamicBookOptions}
+              classOptions={dynamicClassOptions}
+              initialValues={{ section: selectedSection }}
               onSubmitValue={handleAddNote}
               onSuccess={() => setModalOpen(false)}
             />
