@@ -268,58 +268,63 @@ export default function ClientLayoutWrapper({
   };
 
   const breadcrumbs = generateBreadcrumbs();
+  const isProfilePage = pathname?.startsWith("/admin/profile");
 
   // Authenticated routes with sidebar
   return (
     <SidebarProvider defaultOpen={true}>
       <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
         {/* Sidebar */}
-        <aside
-          className="hidden md:flex w-64 shrink-0 flex-col border-r border-border bg-card transition-all duration-300"
-          style={{
-            backgroundColor:
-              theme === "dark"
-                ? "rgba(20, 20, 20, 0.8)"
-                : "rgba(250, 250, 250, 0.8)",
-          }}
-        >
-          <div
-            className="flex h-16 items-center border-b border-border px-4 transition-all duration-300"
+        {!isProfilePage && (
+          <aside
+            className="hidden md:flex w-64 shrink-0 flex-col border-r border-border bg-card transition-all duration-300"
             style={{
-              borderColor:
+              backgroundColor:
                 theme === "dark"
-                  ? "rgba(255, 255, 255, 0.1)"
-                  : "rgba(0, 0, 0, 0.1)",
+                  ? "rgba(20, 20, 20, 0.8)"
+                  : "rgba(250, 250, 250, 0.8)",
             }}
           >
-            <div className="flex items-center gap-3">
-              <BrandLogo className="h-8 w-8 rounded-md" />
-              <span className="text-lg font-medium tracking-tight text-foreground">
-                ProdTrix
-              </span>
+            <div
+              className="flex h-16 items-center border-b border-border px-4 transition-all duration-300"
+              style={{
+                borderColor:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 0.1)"
+                    : "rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <div className="flex items-center gap-3">
+                <BrandLogo className="h-8 w-8 rounded-md" />
+                <span className="text-lg font-medium tracking-tight text-foreground">
+                  ProdTrix
+                </span>
+              </div>
             </div>
-          </div>
-          <div className="flex-1 overflow-y-auto px-4">
-            <SidebarNav userRoles={authUser?.user?.roles ?? []} />
-          </div>
-        </aside>
+            <div className="flex-1 overflow-y-auto px-4">
+              <SidebarNav userRoles={authUser?.user?.roles ?? []} />
+            </div>
+          </aside>
+        )}
 
         {/* Mobile Menu Button */}
-        <button
-          onClick={() => setMobileMenuOpen(true)}
-          className="fixed left-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card shadow-sm transition-all duration-300 md:hidden"
-          style={{
-            backgroundColor:
-              theme === "dark"
-                ? "rgba(40, 40, 40, 0.9)"
-                : "rgba(245, 245, 245, 0.9)",
-          }}
-        >
-          <Menu className="h-5 w-5 text-foreground" />
-        </button>
+        {!isProfilePage && (
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="fixed left-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-md border border-border bg-card shadow-sm transition-all duration-300 md:hidden"
+            style={{
+              backgroundColor:
+                theme === "dark"
+                  ? "rgba(40, 40, 40, 0.9)"
+                  : "rgba(245, 245, 245, 0.9)",
+            }}
+          >
+            <Menu className="h-5 w-5 text-foreground" />
+          </button>
+        )}
 
         {/* Mobile Sidebar Overlay */}
-        {mobileMenuOpen && (
+        {!isProfilePage && mobileMenuOpen && (
           <>
             <div
               className="fixed inset-0 z-50 bg-primary/30 backdrop-blur-sm transition-all duration-300 md:hidden"
