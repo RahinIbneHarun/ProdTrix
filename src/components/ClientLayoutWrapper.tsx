@@ -97,6 +97,11 @@ export default function ClientLayoutWrapper({
     );
   }
 
+  // The newsfeed brings its own universal header and sidebar (see app/feed/layout.tsx).
+  if (pathname.startsWith("/feed")) {
+    return <>{children}</>;
+  }
+
   // Public routes (landing page, auth pages)
   if (isPublicShellRoute) {
     return (
@@ -201,7 +206,7 @@ export default function ClientLayoutWrapper({
             {children}
           </div>
         </main>
-        {!pathname.startsWith("/feed") && <SiteFooter />}
+        <SiteFooter />
       </div>
     );
   }
