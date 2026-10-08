@@ -56,6 +56,15 @@ export interface FeedNotification {
   read: boolean;
 }
 
+export interface FeedComment {
+  id: string;
+  postId: string;
+  authorId?: string; // creator id; undefined for the current user's own comments
+  authorName: string;
+  text: string;
+  createdAt: string;
+}
+
 export type ReportReason = "spam" | "misinformation" | "copyright" | "harassment";
 
 export interface FeedFilters {

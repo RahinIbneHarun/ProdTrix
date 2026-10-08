@@ -4,13 +4,14 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BadgeCheck, BarChart3, Bookmark, MousePointerClick, Share2 } from "lucide-react";
+import { BadgeCheck, BarChart3, Bookmark, MessageCircle, MousePointerClick, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { getCreator } from "@/data/feed-data";
 import type { FeedPost } from "@/interfaces/feed.interface";
 import { filtersToQuery, relativeTime } from "@/lib/feed/utils";
 import { cn } from "@/lib/utils";
-import { useFeedStore } from "@/store/feed-store";
+import { useFeedStore, usePostComments } from "@/store/feed-store";
+import { CommentsSection } from "./CommentsSection";
 import { CreatorAvatar } from "./CreatorAvatar";
 import { FollowButton } from "./FollowButton";
 import { InsightsDialog } from "./InsightsDialog";
@@ -26,6 +27,8 @@ export function PostCard({ post }: { post: FeedPost }) {
   const toggleSaved = useFeedStore((s) => s.toggleSaved);
   const [shareOpen, setShareOpen] = useState(false);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const commentCount = usePostComments(post.id).length;
 
   if (!creator) return null;
 
@@ -132,6 +135,14 @@ export function PostCard({ post }: { post: FeedPost }) {
             <Bookmark className={cn("size-4", isSaved && "fill-current")} />
           </ActionButton>
           <ActionButton
+            onClick={() => setCommentsOpen((v) => !v)}
+            active={commentsOpen}
+            label={commentCount ? `Comment · ${commentCount}` : "Comment"}
+            title={commentsOpen ? "Hide comments" : "Show comments"}
+          >
+            <MessageCircle className="size-4" />
+          </ActionButton>
+          <ActionButton
             onClick={() => sharePost(post, () => setShareOpen(true))}
             label="Share"
             title="Share post"
@@ -147,6 +158,11 @@ export function PostCard({ post }: { post: FeedPost }) {
             <BarChart3 className="size-4" />
           </ActionButton>
         </div>
+        {commentsOpen && (
+          <div className="border-t border-border pt-3">
+            <CommentsSection postId={post.id} postTitle={post.title} autoFocus />
+          </div>
+        )}
       </div>
 
       <ShareDialog post={post} open={shareOpen} onOpenChange={setShareOpen} />

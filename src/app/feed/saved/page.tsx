@@ -16,7 +16,7 @@ export default function SavedRoomPage() {
     .filter((p): p is FeedPost => Boolean(p));
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
+    <div className="mx-auto max-w-[52rem] space-y-4">
       <PageHeading
         icon={<Bookmark />}
         title="Saved"

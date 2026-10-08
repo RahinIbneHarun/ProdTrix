@@ -6,9 +6,10 @@ import { Toaster } from "sonner";
 import { useFeedHydrated } from "@/lib/feed/use-feed-hydrated";
 import { useFollowingStream } from "@/lib/feed/use-following-stream";
 import { FeedHeader } from "./header/FeedHeader";
-import { FollowingSidebar } from "./FollowingSidebar";
+import { LeftSidebar } from "./LeftSidebar";
+import { RightSidebar } from "./RightSidebar";
 
-/** Layout for every /feed route: sticky universal header + desktop following sidebar. */
+/** Layout for every /feed route: sticky universal header, left and right side rails. */
 export function FeedShell({ children }: { children: React.ReactNode }) {
   useFeedHydrated();
   useFollowingStream();
@@ -19,11 +20,15 @@ export function FeedShell({ children }: { children: React.ReactNode }) {
       <Suspense fallback={<div className="h-16 border-b border-border" />}>
         <FeedHeader />
       </Suspense>
-      <div className="mx-auto flex max-w-7xl">
-        <Suspense fallback={null}>
-          <FollowingSidebar />
-        </Suspense>
-        <main className="min-w-0 flex-1 px-4 py-6 sm:px-6">{children}</main>
+      {/* Spacers share leftover width equally, so edge gaps and gaps beside the feed match. */}
+      <div className="lg:flex">
+        <Gap className="lg:block" />
+        <LeftSidebar />
+        <Gap className="lg:block" />
+        <main className="min-w-0 px-4 py-6 sm:px-6 lg:flex-[0_1_52rem] lg:px-0">{children}</main>
+        <Gap className="lg:block" />
+        <RightSidebar />
+        <Gap className="xl:block" />
       </div>
       <Toaster
         position="bottom-center"
@@ -33,4 +38,8 @@ export function FeedShell({ children }: { children: React.ReactNode }) {
       />
     </div>
   );
+}
+
+function Gap({ className }: { className: string }) {
+  return <div aria-hidden className={`hidden min-w-6 flex-1 ${className}`} />;
 }

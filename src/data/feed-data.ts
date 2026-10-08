@@ -1,4 +1,5 @@
 import type {
+  FeedComment,
   FeedCreator,
   FeedNotification,
   FeedPost,
@@ -63,6 +64,62 @@ export const CREATORS: FeedCreator[] = [
     avatarUrl:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
     headline: "Economics explained simply",
+    verified: false,
+  },
+  {
+    id: "c-ayasha-malik",
+    name: "Ayasha Malik",
+    handle: "ayasha.malik",
+    headline: "Full-stack developer · Web Development",
+    verified: true,
+  },
+  {
+    id: "c-lucas-fernandes",
+    name: "Lucas Fernandes",
+    handle: "lucas.dev",
+    headline: "Frontend engineer · UI / UX",
+    verified: false,
+  },
+  {
+    id: "c-meera-krishnan",
+    name: "Meera Krishnan",
+    handle: "meera.k",
+    headline: "Backend engineer · Databases",
+    verified: true,
+  },
+  {
+    id: "c-priya-nair",
+    name: "Priya Nair",
+    handle: "priya.nair",
+    headline: "Learner · System Design",
+    verified: false,
+  },
+  {
+    id: "c-jinho-yoon",
+    name: "Jin-ho Yoon",
+    handle: "jinho.yoon",
+    headline: "Software architect · System Design",
+    verified: true,
+  },
+  {
+    id: "c-tomas-rivera",
+    name: "Tomás Rivera",
+    handle: "tomas.rivera",
+    headline: "DevOps engineer · Cloud & CI/CD",
+    verified: true,
+  },
+  {
+    id: "c-sofia-ahmed",
+    name: "Sofía Ahmed",
+    handle: "sofia.ahmed",
+    headline: "Programming instructor",
+    verified: false,
+  },
+  {
+    id: "c-daniel-park",
+    name: "Daniel Park",
+    handle: "daniel.park",
+    headline: "Product designer · UI / UX",
     verified: false,
   },
 ];
@@ -266,6 +323,41 @@ export const INITIAL_NOTIFICATIONS: FeedNotification[] = [
     message: "Verified creator applications are now open. Apply from the menu.",
     createdAt: "2026-09-24T09:00:00.000Z",
     read: true,
+  },
+];
+
+export const SAMPLE_COMMENTS: FeedComment[] = [
+  {
+    id: "cm-1",
+    postId: "p-matrix",
+    authorId: "c-tanvir",
+    authorName: "Tanvir Hasan",
+    text: "The determinant-as-area overlay is brilliant. Using this with my Class 12 group tomorrow.",
+    createdAt: "2026-09-25T10:12:00.000Z",
+  },
+  {
+    id: "cm-2",
+    postId: "p-matrix",
+    authorId: "c-nusrat",
+    authorName: "Nusrat Jahan",
+    text: "Could you add a 3×3 version in v4?",
+    createdAt: "2026-09-25T13:40:00.000Z",
+  },
+  {
+    id: "cm-3",
+    postId: "p-bst",
+    authorId: "c-ayesha",
+    authorName: "Ayesha Rahman",
+    text: "The recursion stack panel finally made post-order click for my students.",
+    createdAt: "2026-09-22T15:05:00.000Z",
+  },
+  {
+    id: "cm-4",
+    postId: "p-projectile",
+    authorId: "c-robert",
+    authorName: "Dr. Robert Smith",
+    text: "Nice drag model. Would love a slider for the drag coefficient.",
+    createdAt: "2026-09-24T18:30:00.000Z",
   },
 ];
 

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { BadgeCheck, BarChart3, Pause, Play, Share2 } from "lucide-react";
+import { CommentsSection } from "@/components/feed/CommentsSection";
 import { CreatorAvatar } from "@/components/feed/CreatorAvatar";
 import { FollowButton } from "@/components/feed/FollowButton";
 import { InsightsDialog } from "@/components/feed/InsightsDialog";
@@ -132,6 +133,13 @@ export default function ContentPage() {
           </button>
         </div>
       </div>
+
+      <section aria-labelledby="comments-heading" className="space-y-3 border-t border-border pt-4">
+        <h2 id="comments-heading" className="text-sm font-semibold">
+          Comments
+        </h2>
+        <CommentsSection postId={post.id} postTitle={post.title} previewCount={5} />
+      </section>
 
       <ShareDialog post={post} open={shareOpen} onOpenChange={setShareOpen} />
       <InsightsDialog post={post} open={insightsOpen} onOpenChange={setInsightsOpen} />

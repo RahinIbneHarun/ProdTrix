@@ -28,7 +28,7 @@ export default function CreatorProfilePage() {
   );
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
+    <div className="mx-auto max-w-[52rem] space-y-4">
       <section className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 text-center">
         <CreatorAvatar creator={creator} size={88} />
         <div>
@@ -45,9 +45,13 @@ export default function CreatorProfilePage() {
         <FollowButton creatorId={creator.id} className="h-9 px-5 text-sm" />
       </section>
 
-      {posts.map((p) => (
-        <PostCard key={p.id} post={p} />
-      ))}
+      {posts.length === 0 ? (
+        <p className="rounded-2xl border border-dashed border-border p-10 text-center text-sm text-muted-foreground">
+          {creator.name} hasn't posted anything yet.
+        </p>
+      ) : (
+        posts.map((p) => <PostCard key={p.id} post={p} />)
+      )}
     </div>
   );
 }

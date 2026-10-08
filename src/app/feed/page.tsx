@@ -71,7 +71,7 @@ function Newsfeed() {
   const creator = filters.creator ? getCreator(filters.creator) : undefined;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
+    <div className="mx-auto max-w-[52rem] space-y-4">
       {creator && (
         <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-4">
           <CreatorAvatar creator={creator} size={48} />
@@ -153,7 +153,7 @@ function ActiveFilters({ filters }: { filters: FeedFilters }) {
 
 function FeedSkeleton() {
   return (
-    <div className="mx-auto max-w-2xl space-y-4">
+    <div className="mx-auto max-w-[52rem] space-y-4">
       {[0, 1].map((i) => (
         <div key={i} className="h-[520px] animate-pulse rounded-2xl border border-border bg-muted/40" />
       ))}

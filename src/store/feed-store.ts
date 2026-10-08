@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
@@ -7,8 +8,10 @@ import {
   INITIAL_FOLLOWING,
   INITIAL_NEW_POST_COUNTS,
   INITIAL_NOTIFICATIONS,
+  SAMPLE_COMMENTS,
 } from "@/data/feed-data";
 import type {
+  FeedComment,
   FeedNotification,
   FeedPost,
   ReactionType,
@@ -47,6 +50,7 @@ interface FeedState {
   viewedPosts: string[];
   verification: VerificationStatus;
   birthdayReminders: boolean;
+  myComments: FeedComment[];
 
   toggleFollow: (creatorId: string) => void;
   setReaction: (postId: string, reaction: ReactionType) => void;
@@ -68,6 +72,8 @@ interface FeedState {
   addWatchSeconds: (postId: string, seconds: number) => void;
   submitVerification: () => void;
   setBirthdayReminders: (on: boolean) => void;
+  addComment: (postId: string, text: string) => void;
+  deleteComment: (commentId: string) => void;
 }
 
 const bump = (map: Record<string, number>, key: string, by: number) => ({
@@ -94,6 +100,7 @@ export const useFeedStore = create<FeedState>()(
       viewedPosts: [],
       verification: "none",
       birthdayReminders: true,
+      myComments: [],
 
       toggleFollow: (creatorId) =>
         set((s) => {
@@ -234,6 +241,23 @@ export const useFeedStore = create<FeedState>()(
 
       submitVerification: () => set({ verification: "submitted" }),
       setBirthdayReminders: (on) => set({ birthdayReminders: on }),
+
+      addComment: (postId, text) =>
+        set((s) => ({
+          myComments: [
+            ...s.myComments,
+            {
+              id: `cm-me-${Date.now()}`,
+              postId,
+              authorName: "You",
+              text,
+              createdAt: new Date().toISOString(),
+            },
+          ],
+        })),
+
+      deleteComment: (commentId) =>
+        set((s) => ({ myComments: s.myComments.filter((c) => c.id !== commentId) })),
     }),
     {
       name: "prodtrix-feed",
@@ -264,4 +288,16 @@ export function useReactionCounts(post: FeedPost) {
   const counts = { ...post.reactions };
   if (mine) counts[mine] += 1;
   return { counts, mine };
+}
+
+/** Sample comments plus the user's own, oldest first. */
+export function usePostComments(postId: string): FeedComment[] {
+  const mine = useFeedStore((s) => s.myComments);
+  return useMemo(
+    () =>
+      [...SAMPLE_COMMENTS, ...mine]
+        .filter((c) => c.postId === postId)
+        .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+    [mine, postId],
+  );
 }
