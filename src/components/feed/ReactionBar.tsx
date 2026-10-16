@@ -5,11 +5,12 @@ import { cn } from "@/lib/utils";
 import { useFeedStore, useReactionCounts } from "@/store/feed-store";
 import type { FeedPost, ReactionType } from "@/interfaces/feed.interface";
 import { AnimatedCount } from "./AnimatedCount";
+import { FeedIcon, type FeedIconName } from "./FeedIcon";
 
-export const REACTIONS: { type: ReactionType; emoji: string; label: string }[] = [
-  { type: "gold", emoji: "🥇", label: "Gold" },
-  { type: "diamond", emoji: "💎", label: "Diamond" },
-  { type: "clap", emoji: "👏", label: "Clap" },
+export const REACTIONS: { type: ReactionType; emoji: string; icon?: FeedIconName; label: string }[] = [
+  { type: "gold", emoji: "🥇", icon: "excellence", label: "Gold" },
+  { type: "diamond", emoji: "💎", icon: "luxury", label: "Diamond" },
+  { type: "clap", emoji: "👏", icon: "clap", label: "Clap" },
   { type: "tasty", emoji: "😋", label: "Tasty" },
 ];
 
@@ -19,7 +20,7 @@ export function ReactionBar({ post }: { post: FeedPost }) {
 
   return (
     <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Reactions">
-      {REACTIONS.map(({ type, emoji, label }) => {
+      {REACTIONS.map(({ type, emoji, icon, label }) => {
         const active = mine === type;
         return (
           <motion.button
@@ -42,7 +43,7 @@ export function ReactionBar({ post }: { post: FeedPost }) {
               transition={{ duration: 0.3 }}
               className="text-base leading-none"
             >
-              {emoji}
+              {icon ? <FeedIcon name={icon} className="size-[18px]" /> : emoji}
             </motion.span>
             <span className="hidden sm:inline">{label}</span>
             <AnimatedCount value={counts[type]} />

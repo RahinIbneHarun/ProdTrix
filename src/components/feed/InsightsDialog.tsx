@@ -11,6 +11,7 @@ import {
 import type { FeedPost } from "@/interfaces/feed.interface";
 import { formatDuration } from "@/lib/feed/utils";
 import { useEffectiveInsights } from "@/store/feed-store";
+import { FeedIcon } from "./FeedIcon";
 
 export function InsightsDialog({
   post,
@@ -54,7 +55,9 @@ export function InsightsDialog({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="center" className="p-0">
         <SheetHeader className="pb-2">
-          <SheetTitle>Post insights</SheetTitle>
+          <SheetTitle className="flex items-center gap-2">
+            <FeedIcon name="analytic" className="size-5" /> Post insights
+          </SheetTitle>
           <SheetDescription className="line-clamp-1">{post.title}</SheetDescription>
         </SheetHeader>
         <div className="grid grid-cols-2 gap-3 px-6 pb-4">

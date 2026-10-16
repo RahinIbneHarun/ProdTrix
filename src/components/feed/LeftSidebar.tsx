@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { FeedIcon } from "./FeedIcon";
 import { SidebarPanel } from "./SidebarPanel";
 
 const TOPICS = ["All", "Web Development", "System Design", "Programming", "Databases", "UI / UX", "DevOps"];
@@ -20,7 +21,7 @@ export function LeftSidebar() {
         <p className="mt-0.5 text-xs text-muted-foreground">Learner · Web Development</p>
       </SidebarPanel>
 
-      <SidebarPanel title="Topics">
+      <SidebarPanel title="Topics" icon={<FeedIcon name="school-time" />}>
         <div className="mt-3 flex flex-wrap gap-2">
           {TOPICS.map((topic) => (
             <button

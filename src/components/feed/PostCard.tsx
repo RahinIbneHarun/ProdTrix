@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BadgeCheck, BarChart3, Bookmark, MessageCircle, MousePointerClick, Share2 } from "lucide-react";
+import { MousePointerClick } from "lucide-react";
 import { toast } from "sonner";
 import { getCreator } from "@/data/feed-data";
 import type { FeedPost } from "@/interfaces/feed.interface";
@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { useFeedStore, usePostComments } from "@/store/feed-store";
 import { CommentsSection } from "./CommentsSection";
 import { CreatorAvatar } from "./CreatorAvatar";
+import { FeedIcon } from "./FeedIcon";
 import { FollowButton } from "./FollowButton";
 import { InsightsDialog } from "./InsightsDialog";
 import { PostMenu } from "./PostMenu";
@@ -61,7 +62,7 @@ export function PostCard({ post }: { post: FeedPost }) {
               {creator.name}
             </Link>
             {creator.verified && (
-              <BadgeCheck className="size-4 shrink-0 fill-sky-500 text-white" aria-label="Verified" />
+              <FeedIcon name="approved" label="Verified" />
             )}
             <VersionBadge post={post} />
           </div>
@@ -132,7 +133,7 @@ export function PostCard({ post }: { post: FeedPost }) {
             label={isSaved ? "Saved" : "Save"}
             title={isSaved ? "Remove from Saved" : "Save for later"}
           >
-            <Bookmark className={cn("size-4", isSaved && "fill-current")} />
+            <FeedIcon name="packaging" />
           </ActionButton>
           <ActionButton
             onClick={() => setCommentsOpen((v) => !v)}
@@ -140,14 +141,14 @@ export function PostCard({ post }: { post: FeedPost }) {
             label={commentCount ? `Comment · ${commentCount}` : "Comment"}
             title={commentsOpen ? "Hide comments" : "Show comments"}
           >
-            <MessageCircle className="size-4" />
+            <FeedIcon name={commentsOpen ? "coment-2" : "coment"} />
           </ActionButton>
           <ActionButton
             onClick={() => sharePost(post, () => setShareOpen(true))}
             label="Share"
             title="Share post"
           >
-            <Share2 className="size-4" />
+            <FeedIcon name="share" />
           </ActionButton>
           <ActionButton
             onClick={() => setInsightsOpen(true)}
@@ -155,7 +156,7 @@ export function PostCard({ post }: { post: FeedPost }) {
             title="View post insights"
             className="ml-auto"
           >
-            <BarChart3 className="size-4" />
+            <FeedIcon name="insights-2" />
           </ActionButton>
         </div>
         {commentsOpen && (

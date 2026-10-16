@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bookmark } from "lucide-react";
+import { FeedIcon } from "@/components/feed/FeedIcon";
 import { PageHeading } from "@/components/feed/PageHeading";
 import { PostCard } from "@/components/feed/PostCard";
 import { getPost } from "@/data/feed-data";
@@ -18,7 +18,7 @@ export default function SavedRoomPage() {
   return (
     <div className="mx-auto max-w-[52rem] space-y-4">
       <PageHeading
-        icon={<Bookmark />}
+        icon={<FeedIcon name="packaging" />}
         title="Saved"
         description={`${posts.length} item${posts.length === 1 ? "" : "s"}`}
       />

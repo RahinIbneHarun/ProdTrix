@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Bell, CheckCheck, Megaphone } from "lucide-react";
+import { CheckCheck, Megaphone } from "lucide-react";
+import { FeedIcon } from "../FeedIcon";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getCreator } from "@/data/feed-data";
 import type { NotificationKind } from "@/interfaces/feed.interface";
@@ -41,7 +42,7 @@ export function NotificationsMenu() {
           label={unread ? `Notifications, ${unread} unread` : "Notifications"}
           badge={unread}
         >
-          <Bell />
+          <FeedIcon name="notification" className="size-5" />
         </HeaderIconButton>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[min(24rem,calc(100vw-24px))] p-0">

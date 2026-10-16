@@ -4,7 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { BadgeCheck, BarChart3, Pause, Play, Share2 } from "lucide-react";
+import { Pause, Play } from "lucide-react";
+import { FeedIcon } from "@/components/feed/FeedIcon";
 import { CommentsSection } from "@/components/feed/CommentsSection";
 import { CreatorAvatar } from "@/components/feed/CreatorAvatar";
 import { FollowButton } from "@/components/feed/FollowButton";
@@ -64,7 +65,7 @@ export default function ContentPage() {
         <div className="min-w-0 flex-1">
           <Link href={`/feed/creator/${creator.id}`} className="flex items-center gap-1 text-sm font-semibold hover:underline">
             {creator.name}
-            {creator.verified && <BadgeCheck className="size-4 fill-sky-500 text-white" />}
+            {creator.verified && <FeedIcon name="approved" label="Verified" />}
           </Link>
           <p className="truncate text-xs text-muted-foreground">{creator.headline}</p>
         </div>
@@ -122,14 +123,14 @@ export default function ContentPage() {
             onClick={() => sharePost(post, () => setShareOpen(true))}
             className="inline-flex h-9 items-center gap-2 rounded-lg px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
           >
-            <Share2 className="size-4" /> Share
+            <FeedIcon name="share" /> Share
           </button>
           <button
             type="button"
             onClick={() => setInsightsOpen(true)}
             className="inline-flex h-9 items-center gap-2 rounded-lg px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
           >
-            <BarChart3 className="size-4" /> Insights
+            <FeedIcon name="insights-2" /> Insights
           </button>
         </div>
       </div>

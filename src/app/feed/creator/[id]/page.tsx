@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { BadgeCheck } from "lucide-react";
+import { FeedIcon } from "@/components/feed/FeedIcon";
 import { CreatorAvatar } from "@/components/feed/CreatorAvatar";
 import { FollowButton } from "@/components/feed/FollowButton";
 import { PostCard } from "@/components/feed/PostCard";
@@ -34,7 +34,7 @@ export default function CreatorProfilePage() {
         <div>
           <h1 className="flex items-center justify-center gap-1.5 text-xl font-semibold">
             {creator.name}
-            {creator.verified && <BadgeCheck className="size-5 fill-sky-500 text-white" aria-label="Verified" />}
+            {creator.verified && <FeedIcon name="approved" className="size-5" label="Verified" />}
           </h1>
           <p className="text-sm text-muted-foreground">@{creator.handle}</p>
           <p className="mt-2 text-sm">{creator.headline}</p>

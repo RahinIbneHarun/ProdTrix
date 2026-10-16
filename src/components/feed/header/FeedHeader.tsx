@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, Search, SlidersHorizontal, User, X } from "lucide-react";
+import { User, X } from "lucide-react";
+import { FeedIcon } from "../FeedIcon";
 import { BrandLogo } from "@/components/brand-logo";
 import { initials, useCurrentUser } from "@/lib/feed/use-current-user";
 import { activeFilterCount, filtersFromParams, filtersToQuery } from "@/lib/feed/utils";
@@ -65,7 +66,7 @@ export function FeedHeader() {
 
   const searchBox = (
     <form onSubmit={submit} role="search" className="relative w-full">
-      <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <FeedIcon name="magnifying-glass" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
       <input
         ref={inputRef}
         type="search"
@@ -85,7 +86,7 @@ export function FeedHeader() {
           filterCount ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground",
         )}
       >
-        <SlidersHorizontal className="size-4" />
+        <FeedIcon name="settings" />
         {filterCount > 0 && (
           <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">
             {filterCount}
@@ -99,7 +100,7 @@ export function FeedHeader() {
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/75">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-1.5 px-3 sm:gap-2 sm:px-4">
         <HeaderIconButton label="Go back" onClick={goBack}>
-          <ArrowLeft />
+          <FeedIcon name="back-button" className="size-5" />
         </HeaderIconButton>
 
         <Link href="/feed" onClick={onLogo} className="flex shrink-0 items-center gap-2" aria-label="ProdTrix — back to top of feed">
@@ -118,7 +119,7 @@ export function FeedHeader() {
           onClick={() => setMobileSearch((v) => !v)}
           aria-expanded={mobileSearch}
         >
-          {mobileSearch ? <X /> : <Search />}
+          {mobileSearch ? <X /> : <FeedIcon name="magnifying-glass" className="size-5" />}
         </HeaderIconButton>
         <FriendAddMenu />
         <NotificationsMenu />

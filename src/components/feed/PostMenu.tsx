@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Flag, MoreHorizontal, ThumbsDown, ThumbsUp } from "lucide-react";
+import { Flag, ThumbsDown, ThumbsUp } from "lucide-react";
+import { FeedIcon } from "./FeedIcon";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -45,7 +46,7 @@ export function PostMenu({ post }: { post: FeedPost }) {
             aria-label="Post options"
             className="-mr-1 inline-flex size-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
           >
-            <MoreHorizontal className="size-5" />
+            <FeedIcon name="more" className="size-5" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-64">

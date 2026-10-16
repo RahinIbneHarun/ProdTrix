@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Check, Search, UserPlus, X } from "lucide-react";
+import { Check, X } from "lucide-react";
+import { FeedIcon } from "../FeedIcon";
 import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CREATORS, SUGGESTED_FRIENDS, getCreator } from "@/data/feed-data";
@@ -33,13 +34,13 @@ export function FriendAddMenu() {
     <Popover>
       <PopoverTrigger asChild>
         <HeaderIconButton label="Add friend / connect" badge={incoming.length}>
-          <UserPlus />
+          <FeedIcon name="people" className="size-5" />
         </HeaderIconButton>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[min(22rem,calc(100vw-24px))] p-0">
         <div className="border-b border-border p-3">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <FeedIcon name="magnifying-glass" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}

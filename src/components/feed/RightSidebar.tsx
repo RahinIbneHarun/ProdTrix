@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getCreator } from "@/data/feed-data";
 import { cn } from "@/lib/utils";
 import { CreatorAvatar } from "./CreatorAvatar";
+import { FeedIcon } from "./FeedIcon";
 import { SidebarPanel } from "./SidebarPanel";
 
 const FOLLOWING = [
@@ -43,7 +44,7 @@ export function RightSidebar() {
         </ul>
       </SidebarPanel>
 
-      <SidebarPanel title="Top creators">
+      <SidebarPanel title="Top creators" icon={<FeedIcon name="crown" />}>
         <ul className="text-sm">
           {TOP_CREATORS.map(({ id, count }) => (
             <li key={id}>
