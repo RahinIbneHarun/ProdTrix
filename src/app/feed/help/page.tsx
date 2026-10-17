@@ -5,7 +5,7 @@ import { PageHeading } from "@/components/feed/PageHeading";
 const FAQ = [
   {
     q: "What do the four reactions mean?",
-    a: "🥇 Gold for outstanding work, 💎 Diamond for rare insight, 👏 Clap for effort, 😋 Tasty for content that's just enjoyable. You can hold one reaction per post — tap another to switch or tap the same one to undo.",
+    a: "🥇 Gold for outstanding work, 💎 Diamond for rare insight, 👏 Clap for effort, 😞 Sad when something let you down. You can hold one reaction per post — tap another to switch or tap the same one to undo.",
   },
   {
     q: "What is Saved?",

@@ -12,7 +12,7 @@ export function LeftSidebar() {
   const [activeTopic, setActiveTopic] = useState("All");
 
   return (
-    <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 space-y-4 overflow-y-auto py-6 lg:block">
+    <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 space-y-4 overflow-y-auto py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:block">
       <SidebarPanel className="flex flex-col items-center py-5 text-center">
         <span className="mb-3 flex size-12 items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground">
           P

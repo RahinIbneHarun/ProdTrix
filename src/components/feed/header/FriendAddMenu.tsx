@@ -14,6 +14,7 @@ import { HeaderIconButton } from "./HeaderIconButton";
 
 export function FriendAddMenu() {
   const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
   const friends = useFeedStore((s) => s.friends);
   const sent = useFeedStore((s) => s.sentRequests);
   const incoming = useFeedStore((s) => s.incomingRequests);
@@ -31,7 +32,7 @@ export function FriendAddMenu() {
   const requests = incoming.map(getCreator).filter((c): c is FeedCreator => Boolean(c));
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <HeaderIconButton label="Add friend / connect" badge={incoming.length}>
           <FeedIcon name="people" className="size-5" />
@@ -117,6 +118,14 @@ export function FriendAddMenu() {
             </Section>
           )}
         </div>
+
+        <Link
+          href="/feed/friends"
+          onClick={() => setOpen(false)}
+          className="block border-t border-border px-4 py-2.5 text-center text-sm font-semibold text-primary hover:bg-muted dark:text-foreground"
+        >
+          See all friends &amp; requests
+        </Link>
       </PopoverContent>
     </Popover>
   );

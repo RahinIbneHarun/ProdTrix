@@ -33,7 +33,7 @@ const rowCls =
 /** Wide-desktop (≥1280px) right rail: Following and Top Creators cards. */
 export function RightSidebar() {
   return (
-    <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 space-y-4 overflow-y-auto py-6 xl:block">
+    <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 space-y-4 overflow-y-auto py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden xl:block">
       <SidebarPanel title="Following">
         <ul className="text-sm">
           {FOLLOWING.map((id) => (

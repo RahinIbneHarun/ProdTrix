@@ -27,6 +27,7 @@ import { HeaderIconButton } from "./HeaderIconButton";
 export function SystemDrawer() {
   const savedCount = useFeedStore((s) => Object.keys(s.saved).length);
   const verification = useFeedStore((s) => s.verification);
+  const incomingCount = useFeedStore((s) => s.incomingRequests.length);
   const birthdays = useTodaysBirthdays();
 
   const links: { href: string; label: string; icon: React.ReactNode; meta?: string | number }[] = [
@@ -36,6 +37,12 @@ export function SystemDrawer() {
       label: "Saved",
       icon: <FeedIcon name="packaging" className="size-[18px]" />,
       meta: savedCount || undefined,
+    },
+    {
+      href: "/feed/friends",
+      label: "Friends",
+      icon: <FeedIcon name="people" className="size-[18px]" />,
+      meta: incomingCount || undefined,
     },
     { href: "/feed/help", label: "Help", icon: <FeedIcon name="question-mark" className="size-[18px]" /> },
     { href: "/support", label: "Support / Contact Us", icon: <LifeBuoy className="size-[18px]" /> },

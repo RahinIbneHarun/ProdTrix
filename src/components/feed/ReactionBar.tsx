@@ -7,11 +7,11 @@ import type { FeedPost, ReactionType } from "@/interfaces/feed.interface";
 import { AnimatedCount } from "./AnimatedCount";
 import { FeedIcon, type FeedIconName } from "./FeedIcon";
 
-export const REACTIONS: { type: ReactionType; emoji: string; icon?: FeedIconName; label: string }[] = [
-  { type: "gold", emoji: "🥇", icon: "excellence", label: "Gold" },
-  { type: "diamond", emoji: "💎", icon: "luxury", label: "Diamond" },
-  { type: "clap", emoji: "👏", icon: "clap", label: "Clap" },
-  { type: "tasty", emoji: "😋", label: "Tasty" },
+export const REACTIONS: { type: ReactionType; icon: FeedIconName; label: string }[] = [
+  { type: "gold", icon: "excellence", label: "Gold" },
+  { type: "diamond", icon: "luxury", label: "Diamond" },
+  { type: "clap", icon: "clap", label: "Clap" },
+  { type: "sad", icon: "face", label: "Sad" },
 ];
 
 export function ReactionBar({ post }: { post: FeedPost }) {
@@ -20,7 +20,7 @@ export function ReactionBar({ post }: { post: FeedPost }) {
 
   return (
     <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Reactions">
-      {REACTIONS.map(({ type, emoji, icon, label }) => {
+      {REACTIONS.map(({ type, icon, label }) => {
         const active = mine === type;
         return (
           <motion.button
@@ -30,6 +30,7 @@ export function ReactionBar({ post }: { post: FeedPost }) {
             onClick={() => setReaction(post.id, type)}
             aria-pressed={active}
             title={active ? `Remove ${label}` : label}
+            aria-label={`${label}, ${counts[type]}`}
             className={cn(
               "inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-xs font-medium transition-colors",
               active
@@ -41,11 +42,10 @@ export function ReactionBar({ post }: { post: FeedPost }) {
               aria-hidden
               animate={active ? { scale: [1, 1.35, 1] } : { scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="text-base leading-none"
+              className="flex leading-none"
             >
-              {icon ? <FeedIcon name={icon} className="size-[18px]" /> : emoji}
+              <FeedIcon name={icon} className="size-[18px]" />
             </motion.span>
-            <span className="hidden sm:inline">{label}</span>
             <AnimatedCount value={counts[type]} />
           </motion.button>
         );

@@ -156,7 +156,7 @@ export function PostCard({ post }: { post: FeedPost }) {
             title="View post insights"
             className="ml-auto"
           >
-            <FeedIcon name="insights-2" />
+            <FeedIcon name="insights-2" className="size-5" />
           </ActionButton>
         </div>
         {commentsOpen && (

@@ -130,7 +130,7 @@ export default function ContentPage() {
             onClick={() => setInsightsOpen(true)}
             className="inline-flex h-9 items-center gap-2 rounded-lg px-3 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
           >
-            <FeedIcon name="insights-2" /> Insights
+            <FeedIcon name="insights-2" className="size-5" /> Insights
           </button>
         </div>
       </div>

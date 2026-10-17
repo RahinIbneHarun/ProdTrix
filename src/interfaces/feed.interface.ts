@@ -1,4 +1,4 @@
-export type ReactionType = "gold" | "diamond" | "clap" | "tasty";
+export type ReactionType = "gold" | "diamond" | "clap" | "sad";
 
 export type ContentCategory = "academic" | "non-academic";
 

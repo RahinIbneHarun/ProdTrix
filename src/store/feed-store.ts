@@ -68,6 +68,7 @@ interface FeedState {
   cancelFriendRequest: (id: string) => void;
   acceptFriendRequest: (id: string) => void;
   declineFriendRequest: (id: string) => void;
+  removeFriend: (id: string) => void;
   recordView: (postId: string) => void;
   addWatchSeconds: (postId: string, seconds: number) => void;
   submitVerification: () => void;
@@ -211,6 +212,9 @@ export const useFeedStore = create<FeedState>()(
           incomingRequests: s.incomingRequests.filter((x) => x !== id),
         })),
 
+      removeFriend: (id) =>
+        set((s) => ({ friends: s.friends.filter((x) => x !== id) })),
+
       recordView: (postId) =>
         set((s) => {
           const firstView = !s.viewedPosts.includes(postId);
@@ -286,7 +290,8 @@ export function useEffectiveInsights(post: FeedPost) {
 export function useReactionCounts(post: FeedPost) {
   const mine = useFeedStore((s) => s.myReactions[post.id]);
   const counts = { ...post.reactions };
-  if (mine) counts[mine] += 1;
+  // Ignore reactions saved under a type that no longer exists (e.g. the old "tasty").
+  if (mine && mine in counts) counts[mine] += 1;
   return { counts, mine };
 }
 
