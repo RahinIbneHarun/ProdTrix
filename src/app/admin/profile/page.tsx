@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Plus,
   BookOpen,
@@ -12,6 +13,10 @@ import {
   ChevronLeft,
   ChevronRight,
   StickyNote,
+  SquarePen,
+  Info,
+  LayoutDashboard,
+  BookMarked,
 } from "lucide-react";
 import {
   Sheet,
@@ -22,6 +27,8 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import BookNoteForm, { type BookNoteInput } from "@/components/book-note-form";
+import { PROFILE } from "@/lib/profile/profile-data";
+import { ProfilePosts } from "@/components/profile/ProfilePosts";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 type CarouselItem = { name: string; image: string };
@@ -65,7 +72,15 @@ const NOTE_TYPE_OPTIONS = [
 
 // Dummy placeholder images (picsum.photos, seeded so they stay stable across reloads)
 const COVER_PHOTO_URL = "https://picsum.photos/seed/prodtrix-cover/1200/400";
-const AVATAR_PHOTO_URL = "https://picsum.photos/seed/prodtrix-avatar/200/200";
+const AVATAR_PHOTO_URL = PROFILE.avatarUrl;
+
+// Shortcuts shown between the profile card and the Course section
+const PROFILE_LINKS = [
+  { href: "/admin/profile/add-post", label: "Add Post", icon: SquarePen },
+  { href: "/admin/profile/about", label: "About", icon: Info },
+  { href: "/admin/profile/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/profile/book-review", label: "Book Review", icon: BookMarked },
+];
 
 const TABS = [
   { id: "basic-info", label: "Basic Info" },
@@ -255,10 +270,10 @@ function TabContent({ activeTab }: { activeTab: string }) {
     <div className="mt-4 theme-card p-5 shadow-[0_24px_70px_rgba(15,23,42,0.28)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.03)_inset,0_20px_80px_rgba(0,0,0,0.35)]">
       {activeTab === "basic-info" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <InnerDataCard label="Name" value="Sifur Taher Sarar" />
-          <InnerDataCard label="Field" value="Full Stack Developer" />
-          <InnerDataCard label="Email" value="sifur@example.com" />
-          <InnerDataCard label="Status" value="Available for work" green />
+          <InnerDataCard label="Name" value={PROFILE.name} />
+          <InnerDataCard label="Field" value={PROFILE.field} />
+          <InnerDataCard label="Email" value={PROFILE.email} />
+          <InnerDataCard label="Status" value={PROFILE.status} green />
         </div>
       ) : (
         <div className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5 shadow-xl shadow-gray-400/50 dark:shadow-none px-6 py-10 text-center text-black dark:text-white/25 text-sm">
@@ -421,16 +436,16 @@ export default function ProfilePage() {
               {/* Name + Bio */}
               <div className="flex-1 text-center sm:text-left space-y-1 pb-1">
                 <h1 className="text-lg font-semibold text-black dark:text-white">
-                  Sifur Taher Sarar
+                  {PROFILE.name}
                 </h1>
                 <p className="text-xs text-black dark:text-white/40">
-                  Full Stack Developer · On Demand ·{" "}
+                  {PROFILE.field} · {PROFILE.availability} ·{" "}
                   <span className="text-emerald-500 dark:text-emerald-400">
-                    100% Complete
+                    {PROFILE.completion}% Complete
                   </span>
                 </p>
                 <p className="text-xs text-black dark:text-white/30 italic border-l-2 border-gray-200 dark:border-white/10 pl-3 mt-1">
-                  "Building clean, scalable systems — one commit at a time."
+                  "{PROFILE.bio}"
                 </p>
               </div>
 
@@ -442,6 +457,26 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+
+        {/* ── Shortcuts: Add Post / About / Dashboard / Book Review ── */}
+        <nav
+          aria-label="Profile shortcuts"
+          className="grid grid-cols-2 gap-3 sm:grid-cols-4"
+        >
+          {PROFILE_LINKS.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className="theme-button-secondary flex items-center justify-center gap-2 py-3 text-sm"
+            >
+              <Icon className="h-4 w-4" />
+              <span>{label}</span>
+            </Link>
+          ))}
+        </nav>
+
+        {/* ── Your posts (hidden until you have one) ── */}
+        <ProfilePosts />
 
         {/* ── Content Grid ── */}
         <div className="flex flex-col gap-4">

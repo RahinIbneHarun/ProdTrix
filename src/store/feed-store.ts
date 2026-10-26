@@ -4,6 +4,8 @@ import { useMemo } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
+  CURRENT_USER_ID,
+  FEED_POSTS,
   INCOMING_REQUESTS,
   INITIAL_FOLLOWING,
   INITIAL_NEW_POST_COUNTS,
@@ -11,12 +13,18 @@ import {
   SAMPLE_COMMENTS,
 } from "@/data/feed-data";
 import type {
+  BookReview,
   FeedComment,
   FeedNotification,
+  ProfilePost,
   FeedPost,
   ReactionType,
   ReportReason,
 } from "@/interfaces/feed.interface";
+import { profilePostToFeedPost } from "@/lib/feed/my-posts";
+
+/** localStorage key the feed store persists to. */
+export const FEED_STORAGE_KEY = "prodtrix-feed";
 
 interface InsightsDelta {
   views: number;
@@ -51,6 +59,10 @@ interface FeedState {
   verification: VerificationStatus;
   birthdayReminders: boolean;
   myComments: FeedComment[];
+  myPosts: ProfilePost[];
+  myBookReviews: BookReview[];
+  /** Per-post notification choice; posts not listed use the default (on for your own posts, off for others). */
+  notifyOverrides: Record<string, boolean>;
 
   toggleFollow: (creatorId: string) => void;
   setReaction: (postId: string, reaction: ReactionType) => void;
@@ -75,6 +87,13 @@ interface FeedState {
   setBirthdayReminders: (on: boolean) => void;
   addComment: (postId: string, text: string) => void;
   deleteComment: (commentId: string) => void;
+  addMyPost: (post: Omit<ProfilePost, "id" | "createdAt">) => void;
+  deleteMyPost: (postId: string) => void;
+  updateMyPost: (postId: string, patch: Pick<ProfilePost, "title" | "body">) => void;
+  setPostNotifications: (postId: string, on: boolean) => void;
+  addBookReview: (review: Omit<BookReview, "id" | "createdAt" | "loved">) => void;
+  deleteBookReview: (id: string) => void;
+  toggleReviewLove: (id: string) => void;
 }
 
 const bump = (map: Record<string, number>, key: string, by: number) => ({
@@ -102,6 +121,9 @@ export const useFeedStore = create<FeedState>()(
       verification: "none",
       birthdayReminders: true,
       myComments: [],
+      myPosts: [],
+      myBookReviews: [],
+      notifyOverrides: {},
 
       toggleFollow: (creatorId) =>
         set((s) => {
@@ -262,9 +284,58 @@ export const useFeedStore = create<FeedState>()(
 
       deleteComment: (commentId) =>
         set((s) => ({ myComments: s.myComments.filter((c) => c.id !== commentId) })),
+
+      addMyPost: (post) =>
+        set((s) => ({
+          myPosts: [
+            { ...post, id: `mp-${Date.now()}`, createdAt: new Date().toISOString() },
+            ...s.myPosts,
+          ],
+        })),
+
+      deleteMyPost: (postId) =>
+        set((s) => {
+          // Remove everything that pointed at the post, not just the post itself.
+          const { [postId]: _saved, ...saved } = s.saved;
+          const { [postId]: _reaction, ...myReactions } = s.myReactions;
+          const { [postId]: _notify, ...notifyOverrides } = s.notifyOverrides;
+          return {
+            myPosts: s.myPosts.filter((p) => p.id !== postId),
+            myComments: s.myComments.filter((c) => c.postId !== postId),
+            saved,
+            myReactions,
+            notifyOverrides,
+          };
+        }),
+
+      updateMyPost: (postId, patch) =>
+        set((s) => ({
+          myPosts: s.myPosts.map((p) =>
+            p.id === postId ? { ...p, ...patch, editedAt: new Date().toISOString() } : p,
+          ),
+        })),
+
+      setPostNotifications: (postId, on) =>
+        set((s) => ({ notifyOverrides: { ...s.notifyOverrides, [postId]: on } })),
+
+      addBookReview: (review) =>
+        set((s) => ({
+          myBookReviews: [
+            { ...review, id: `br-${Date.now()}`, loved: false, createdAt: new Date().toISOString() },
+            ...s.myBookReviews,
+          ],
+        })),
+
+      deleteBookReview: (id) =>
+        set((s) => ({ myBookReviews: s.myBookReviews.filter((r) => r.id !== id) })),
+
+      toggleReviewLove: (id) =>
+        set((s) => ({
+          myBookReviews: s.myBookReviews.map((r) => (r.id === id ? { ...r, loved: !r.loved } : r)),
+        })),
     }),
     {
-      name: "prodtrix-feed",
+      name: FEED_STORAGE_KEY,
       storage: createJSONStorage(() => localStorage),
       // Rehydrated manually on the client (see FeedStoreHydrator) so the
       // server render and first client render match.
@@ -305,4 +376,16 @@ export function usePostComments(postId: string): FeedComment[] {
         .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
     [mine, postId],
   );
+}
+
+/** Every post the feed can show: the ones you wrote on your profile (newest first) plus the sample feed posts. */
+export function useAllPosts(): FeedPost[] {
+  const mine = useFeedStore((s) => s.myPosts);
+  return useMemo(() => [...mine.map(profilePostToFeedPost), ...FEED_POSTS], [mine]);
+}
+
+
+/** Whether you get notifications for this post: your choice, otherwise on for your own posts only. */
+export function usePostNotifications(post: FeedPost): boolean {
+  return useFeedStore((s) => s.notifyOverrides[post.id] ?? post.creatorId === CURRENT_USER_ID);
 }

@@ -7,6 +7,7 @@ import {
   LifeBuoy,
   LogOut,
   Menu,
+  User,
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand-logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -31,6 +32,7 @@ export function SystemDrawer() {
   const birthdays = useTodaysBirthdays();
 
   const links: { href: string; label: string; icon: React.ReactNode; meta?: string | number }[] = [
+    { href: "/admin/profile", label: "Profile", icon: <User className="size-[18px]" /> },
     { href: "/feed/settings", label: "Settings", icon: <FeedIcon name="settings" className="size-[18px]" /> },
     {
       href: "/feed/saved",

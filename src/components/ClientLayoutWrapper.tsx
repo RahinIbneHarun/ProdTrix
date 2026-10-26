@@ -1,5 +1,6 @@
 "use client";
 
+import { BackButton } from "@/components/BackButton";
 import { BrandLogo } from "@/components/brand-logo";
 import { SiteFooter } from "@/components/site-footer";
 import { SidebarNav } from "@/components/sidebar-nav";
@@ -124,6 +125,7 @@ export default function ClientLayoutWrapper({
             }}
           >
             <div className="flex items-center gap-4">
+              {pathname !== "/Home" && <BackButton fallbackHref="/Home" />}
               <Link
                 href="/Home"
                 className="flex items-center gap-3 transition-opacity duration-300"
@@ -377,77 +379,81 @@ export default function ClientLayoutWrapper({
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-          <header
-            className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-card/95 transition-all duration-300"
-            style={{
-              paddingLeft: "1rem",
-              paddingRight: "2rem",
-              backgroundColor:
-                theme === "dark"
-                  ? "rgba(20, 20, 20, 0.95)"
-                  : "rgba(255, 255, 255, 0.95)",
-              borderColor:
-                theme === "dark"
-                  ? "rgba(255, 255, 255, 0.1)"
-                  : "rgba(0, 0, 0, 0.1)",
-            }}
-          >
-            {/* Breadcrumbs */}
-            <div className="flex items-center gap-2">
-              <nav className="flex items-center gap-1 text-sm">
-                {breadcrumbs.map((crumb, index) => (
-                  <div key={crumb.href} className="flex items-center gap-1">
-                    {index === 0 && (
-                      <Home className="h-3.5 w-3.5 text-muted-foreground" />
-                    )}
-                    {crumb.isLast ? (
-                      <span className="font-medium text-foreground">
-                        {crumb.label}
-                      </span>
-                    ) : (
-                      <>
-                        <Link
-                          href={crumb.href}
-                          className="text-muted-foreground hover:text-foreground transition-colors"
-                        >
+          {/* The profile pages are full pages with no top bar. */}
+          {!isProfilePage && (
+            <header
+              className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-card/95 transition-all duration-300"
+              style={{
+                paddingLeft: "1rem",
+                paddingRight: "2rem",
+                backgroundColor:
+                  theme === "dark"
+                    ? "rgba(20, 20, 20, 0.95)"
+                    : "rgba(255, 255, 255, 0.95)",
+                borderColor:
+                  theme === "dark"
+                    ? "rgba(255, 255, 255, 0.1)"
+                    : "rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              {/* Back + breadcrumbs */}
+              <div className="flex items-center gap-2">
+                <BackButton fallbackHref="/feed" className="ml-12 md:ml-0" />
+                <nav className="flex items-center gap-1 text-sm">
+                  {breadcrumbs.map((crumb, index) => (
+                    <div key={crumb.href} className="flex items-center gap-1">
+                      {index === 0 && (
+                        <Home className="h-3.5 w-3.5 text-muted-foreground" />
+                      )}
+                      {crumb.isLast ? (
+                        <span className="font-medium text-foreground">
                           {crumb.label}
-                        </Link>
-                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-                      </>
-                    )}
-                  </div>
-                ))}
-              </nav>
-            </div>
+                        </span>
+                      ) : (
+                        <>
+                          <Link
+                            href={crumb.href}
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            {crumb.label}
+                          </Link>
+                          <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </nav>
+              </div>
 
-            <div className="flex items-center gap-3">
-              {authUser && (
-                <>
-                  <Link
-                    href="/support"
-                    className="theme-button-primary px-3 py-1.5 text-sm font-medium transition-all"
-                  >
-                    Support
-                  </Link>
-                  <ThemeToggle />
-                  <button className="flex h-8 items-center justify-center rounded-full border border-border bg-secondary px-4">
-                    <span className="text-sm font-medium text-foreground">
-                      {authUser?.user?.profile?.name ??
-                        authUser?.user?.username ??
-                        "User"}
-                    </span>
-                  </button>
-                  <a
-                    href="/api/auth/logout"
-                    title="Sign out"
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-colors hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
-                  >
-                    <LogOut className="h-3.5 w-3.5" />
-                  </a>
-                </>
-              )}
-            </div>
-          </header>
+              <div className="flex items-center gap-3">
+                {authUser && (
+                  <>
+                    <Link
+                      href="/support"
+                      className="theme-button-primary px-3 py-1.5 text-sm font-medium transition-all"
+                    >
+                      Support
+                    </Link>
+                    <ThemeToggle />
+                    <button className="flex h-8 items-center justify-center rounded-full border border-border bg-secondary px-4">
+                      <span className="text-sm font-medium text-foreground">
+                        {authUser?.user?.profile?.name ??
+                          authUser?.user?.username ??
+                          "User"}
+                      </span>
+                    </button>
+                    <a
+                      href="/api/auth/logout"
+                      title="Sign out"
+                      className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary text-muted-foreground transition-colors hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      <LogOut className="h-3.5 w-3.5" />
+                    </a>
+                  </>
+                )}
+              </div>
+            </header>
+          )}
 
           <main className="flex-1 overflow-y-auto">
             <Suspense

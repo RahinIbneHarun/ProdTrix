@@ -10,10 +10,10 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { FEED_POSTS } from "@/data/feed-data";
 import { EMPTY_FILTERS, type FeedFilters } from "@/interfaces/feed.interface";
 import { filtersFromParams, filtersToQuery, uniqueValues } from "@/lib/feed/utils";
 import { cn } from "@/lib/utils";
+import { useAllPosts } from "@/store/feed-store";
 
 const selectCls =
   "h-10 w-full rounded-lg border border-border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring/40";
@@ -35,25 +35,27 @@ export function FilterDrawer({
     if (open) setDraft(filtersFromParams(params));
   }, [open, params]);
 
+  const allPosts = useAllPosts();
+
   const subjects = useMemo(
     () =>
       uniqueValues(
-        FEED_POSTS.filter((p) => !draft.category || p.category === draft.category),
+        allPosts.filter((p) => !draft.category || p.category === draft.category),
         (p) => p.subject,
       ),
-    [draft.category],
+    [allPosts, draft.category],
   );
   const chapters = useMemo(
     () =>
       uniqueValues(
-        FEED_POSTS.filter(
+        allPosts.filter(
           (p) =>
             (!draft.category || p.category === draft.category) &&
             (!draft.subject || p.subject === draft.subject),
         ),
         (p) => p.chapter,
       ),
-    [draft.category, draft.subject],
+    [allPosts, draft.category, draft.subject],
   );
 
   const set = <K extends keyof FeedFilters>(key: K, value: FeedFilters[K]) =>

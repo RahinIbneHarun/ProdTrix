@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { FeedIcon } from "./FeedIcon";
 import { SidebarPanel } from "./SidebarPanel";
@@ -13,13 +14,20 @@ export function LeftSidebar() {
 
   return (
     <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 space-y-4 overflow-y-auto py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:block">
-      <SidebarPanel className="flex flex-col items-center py-5 text-center">
-        <span className="mb-3 flex size-12 items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground">
-          P
-        </span>
-        <p className="text-sm font-medium text-foreground">ProdTrix Demo</p>
-        <p className="mt-0.5 text-xs text-muted-foreground">Learner · Web Development</p>
-      </SidebarPanel>
+      <Link
+        href="/admin/profile"
+        aria-label="Open your profile"
+        title="Open your profile"
+        className="block rounded-2xl outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        <SidebarPanel className="flex flex-col items-center py-5 text-center transition-colors hover:bg-muted">
+          <span className="mb-3 flex size-12 items-center justify-center rounded-full bg-primary text-base font-medium text-primary-foreground">
+            P
+          </span>
+          <p className="text-sm font-medium text-foreground">ProdTrix Demo</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Learner · Web Development</p>
+        </SidebarPanel>
+      </Link>
 
       <SidebarPanel title="Topics" icon={<FeedIcon name="school-time" />}>
         <div className="mt-3 flex flex-wrap gap-2">

@@ -4,10 +4,24 @@ import type {
   FeedNotification,
   FeedPost,
 } from "@/interfaces/feed.interface";
+import { PROFILE } from "@/lib/profile/profile-data";
 
 // Demo dataset used until the feed backend is available.
 
 export const CURRENT_USER_ID = "me";
+
+/** The signed-in user as a creator, so their own posts render like anyone else's. Not part of CREATORS (no suggestions, no Follow). */
+export const ME_CREATOR: FeedCreator = {
+  id: CURRENT_USER_ID,
+  name: PROFILE.name,
+  handle: "sifur.taher",
+  avatarUrl: PROFILE.avatarUrl,
+  headline: `${PROFILE.field} · ${PROFILE.availability}`,
+  verified: false,
+};
+
+/** Your own name links to your profile; everyone else to their creator page. */
+export const creatorHref = (id: string) => (id === CURRENT_USER_ID ? "/admin/profile" : `/feed/creator/${id}`);
 
 export const CREATORS: FeedCreator[] = [
   {
@@ -365,6 +379,7 @@ export const SUGGESTED_FRIENDS = ["c-nusrat", "c-mitu", "c-farhan"];
 export const INCOMING_REQUESTS = ["c-farhan", "c-priya-nair", "c-daniel-park"];
 
 export function getCreator(id: string): FeedCreator | undefined {
+  if (id === CURRENT_USER_ID) return ME_CREATOR;
   return CREATORS.find((c) => c.id === id);
 }
 

@@ -6,11 +6,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MousePointerClick } from "lucide-react";
 import { toast } from "sonner";
-import { getCreator } from "@/data/feed-data";
+import { CURRENT_USER_ID, creatorHref, getCreator } from "@/data/feed-data";
 import type { FeedPost } from "@/interfaces/feed.interface";
 import { filtersToQuery, relativeTime } from "@/lib/feed/utils";
 import { cn } from "@/lib/utils";
 import { useFeedStore, usePostComments } from "@/store/feed-store";
+import { PostAttachments } from "@/components/profile/PostAttachments";
 import { CommentsSection } from "./CommentsSection";
 import { CreatorAvatar } from "./CreatorAvatar";
 import { FeedIcon } from "./FeedIcon";
@@ -50,13 +51,13 @@ export function PostCard({ post }: { post: FeedPost }) {
     <article className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
       {/* Creator header */}
       <header className="flex items-start gap-3 p-4 pb-2">
-        <Link href={`/feed/creator/${creator.id}`} aria-label={`${creator.name}'s profile`}>
+        <Link href={creatorHref(creator.id)} aria-label={`${creator.name}'s profile`}>
           <CreatorAvatar creator={creator} size={42} />
         </Link>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
             <Link
-              href={`/feed/creator/${creator.id}`}
+              href={creatorHref(creator.id)}
               className="truncate text-sm font-semibold hover:underline"
             >
               {creator.name}
@@ -70,26 +71,34 @@ export function PostCard({ post }: { post: FeedPost }) {
             @{creator.handle} · <time suppressHydrationWarning dateTime={post.createdAt}>{relativeTime(post.createdAt)}</time>
           </p>
         </div>
-        <FollowButton creatorId={creator.id} className="mt-1 shrink-0" />
+        {creator.id !== CURRENT_USER_ID && <FollowButton creatorId={creator.id} className="mt-1 shrink-0" />}
         <PostMenu post={post} />
       </header>
 
       {/* Chapter • Topic taxonomy */}
-      <div className="flex flex-wrap items-center gap-1.5 px-4 text-xs">
-        <Link
-          href={`/feed${filtersToQuery({ chapter: post.chapter })}`}
-          className="rounded-md bg-secondary/10 px-2 py-0.5 font-medium text-foreground ring-1 ring-inset ring-border hover:bg-muted"
-        >
-          [{post.chapter}]
-        </Link>
-        <span aria-hidden className="text-muted-foreground">•</span>
-        <Link
-          href={`/feed${filtersToQuery({ topic: post.topic })}`}
-          className="rounded-md px-1.5 py-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-        >
-          ({post.topic})
-        </Link>
-      </div>
+      {(post.chapter || post.topic) && (
+        <div className="flex flex-wrap items-center gap-1.5 px-4 text-xs">
+          {post.chapter && (
+            <Link
+              href={`/feed${filtersToQuery({ chapter: post.chapter })}`}
+              className="rounded-md bg-secondary/10 px-2 py-0.5 font-medium text-foreground ring-1 ring-inset ring-border hover:bg-muted"
+            >
+              [{post.chapter}]
+            </Link>
+          )}
+          {post.chapter && post.topic && (
+            <span aria-hidden className="text-muted-foreground">•</span>
+          )}
+          {post.topic && (
+            <Link
+              href={`/feed${filtersToQuery({ topic: post.topic })}`}
+              className="rounded-md px-1.5 py-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
+            >
+              ({post.topic})
+            </Link>
+          )}
+        </div>
+      )}
 
       <div className="px-4 pb-3 pt-2">
         <h2 className="text-[15px] font-semibold leading-snug">
@@ -97,10 +106,17 @@ export function PostCard({ post }: { post: FeedPost }) {
             {post.title}
           </Link>
         </h2>
-        <p className="mt-1 text-sm leading-6 text-muted-foreground">{post.excerpt}</p>
+        {post.excerpt && <p className="mt-1 text-sm leading-6 text-muted-foreground">{post.excerpt}</p>}
       </div>
 
+      {post.attachments && post.attachments.length > 0 && (
+        <div className="px-4 pb-3">
+          <PostAttachments attachments={post.attachments} />
+        </div>
+      )}
+
       {/* Cover launcher */}
+      {post.coverUrl && (
       <Link
         href={contentHref}
         className={cn(
@@ -122,6 +138,7 @@ export function PostCard({ post }: { post: FeedPost }) {
           </span>
         </span>
       </Link>
+      )}
 
       {/* Actions */}
       <div className="space-y-3 p-4">

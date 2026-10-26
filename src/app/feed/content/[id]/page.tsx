@@ -13,21 +13,30 @@ import { InsightsDialog } from "@/components/feed/InsightsDialog";
 import { ReactionBar } from "@/components/feed/ReactionBar";
 import { ShareDialog, sharePost } from "@/components/feed/ShareDialog";
 import { VersionBadge } from "@/components/feed/VersionBadge";
-import { getCreator, getPost } from "@/data/feed-data";
+import { CURRENT_USER_ID, creatorHref, getCreator } from "@/data/feed-data";
+import { useFeedHydrated } from "@/lib/feed/use-feed-hydrated";
 import { useWatchTimer } from "@/lib/feed/use-watch-timer";
 import { filtersToQuery, formatDuration } from "@/lib/feed/utils";
 import { cn } from "@/lib/utils";
+import { useAllPosts } from "@/store/feed-store";
+import { PostAttachments } from "@/components/profile/PostAttachments";
 
 export default function ContentPage() {
   const { id } = useParams<{ id: string }>();
-  const post = getPost(id);
+  const hydrated = useFeedHydrated();
+  const post = useAllPosts().find((p) => p.id === id);
   const creator = post && getCreator(post.creatorId);
+  const isMine = post?.creatorId === CURRENT_USER_ID;
   const { activeSeconds, paused } = useWatchTimer(post?.id);
   const [shareOpen, setShareOpen] = useState(false);
   const [insightsOpen, setInsightsOpen] = useState(false);
   const [simValue, setSimValue] = useState(50);
 
   if (!post || !creator) {
+    // Your own posts load from the browser a moment after the page, so wait before saying "not found".
+    if (!hydrated) {
+      return <div className="mx-auto h-64 max-w-2xl animate-pulse rounded-2xl bg-muted/40" aria-busy="true" />;
+    }
     return (
       <div className="mx-auto max-w-2xl rounded-2xl border border-dashed border-border p-12 text-center">
         <h1 className="font-semibold">Content not found</h1>
@@ -59,28 +68,30 @@ export default function ContentPage() {
       <h1 className="text-2xl font-semibold leading-tight tracking-tight sm:text-3xl">{post.title}</h1>
 
       <div className="flex items-center gap-3">
-        <Link href={`/feed/creator/${creator.id}`}>
+        <Link href={creatorHref(creator.id)}>
           <CreatorAvatar creator={creator} size={40} />
         </Link>
         <div className="min-w-0 flex-1">
-          <Link href={`/feed/creator/${creator.id}`} className="flex items-center gap-1 text-sm font-semibold hover:underline">
+          <Link href={creatorHref(creator.id)} className="flex items-center gap-1 text-sm font-semibold hover:underline">
             {creator.name}
             {creator.verified && <FeedIcon name="approved" label="Verified" />}
           </Link>
           <p className="truncate text-xs text-muted-foreground">{creator.headline}</p>
         </div>
-        <FollowButton creatorId={creator.id} />
+        {!isMine && <FollowButton creatorId={creator.id} />}
       </div>
 
-      {/* Interactive simulation stage */}
+      {/* Interactive simulation stage (sample posts) / cover image (your own posts) */}
+      {post.coverUrl && (
       <section
-        aria-label="Interactive simulation"
+        aria-label={isMine ? "Cover image" : "Interactive simulation"}
         className={cn(
           "relative overflow-hidden rounded-2xl border border-border bg-muted",
           post.coverAspect === "4:3" ? "aspect-[4/3]" : "aspect-video",
         )}
       >
         <Image src={post.coverUrl} alt="" fill priority sizes="(min-width: 768px) 768px, 100vw" className="object-cover" />
+        {!isMine && (
         <div className="absolute inset-x-3 bottom-3 rounded-xl bg-black/65 p-3 text-white backdrop-blur">
           <label htmlFor="sim" className="flex items-center justify-between text-xs font-medium">
             <span>Simulation parameter</span>
@@ -96,7 +107,9 @@ export default function ContentPage() {
             className="mt-2 w-full accent-white"
           />
         </div>
+        )}
       </section>
+      )}
 
       <div
         className={cn(
@@ -111,9 +124,11 @@ export default function ContentPage() {
       </div>
 
       <div className="prose prose-sm max-w-none text-foreground dark:prose-invert sm:prose-base">
-        <p className="lead text-muted-foreground">{post.excerpt}</p>
-        <p>{post.body}</p>
+        {!isMine && <p className="lead text-muted-foreground">{post.excerpt}</p>}
+        {post.body && <p className="whitespace-pre-wrap">{post.body}</p>}
       </div>
+
+      {post.attachments && post.attachments.length > 0 && <PostAttachments attachments={post.attachments} />}
 
       <div className="space-y-3 border-t border-border pt-4">
         <ReactionBar post={post} />

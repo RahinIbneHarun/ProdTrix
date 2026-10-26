@@ -16,16 +16,29 @@ import { useFeedStore } from "@/store/feed-store";
 import { cn } from "@/lib/utils";
 import { CreatorAvatar } from "./CreatorAvatar";
 
-export function postUrl(post: FeedPost) {
-  return `${window.location.origin}/feed/content/${post.id}`;
+/** Anything that can be shared: a title, a short text and the page path it points to. */
+export interface ShareItem {
+  title: string;
+  text: string;
+  path: string;
+  /** Heading of the pop-up, e.g. "Share review". Defaults to "Share post". */
+  label?: string;
+}
+
+const toShareItem = (x: FeedPost | ShareItem): ShareItem =>
+  "path" in x ? x : { title: x.title, text: x.excerpt, path: `/feed/content/${x.id}` };
+
+export function postUrl(x: FeedPost | ShareItem) {
+  return `${window.location.origin}${toShareItem(x).path}`;
 }
 
 /** Native share sheet on touch devices, custom modal everywhere else. */
-export async function sharePost(post: FeedPost, openModal: () => void) {
+export async function sharePost(post: FeedPost | ShareItem, openModal: () => void) {
+  const item = toShareItem(post);
   const touch = window.matchMedia("(pointer: coarse)").matches;
   if (touch && typeof navigator.share === "function") {
     try {
-      await navigator.share({ title: post.title, text: post.excerpt, url: postUrl(post) });
+      await navigator.share({ title: item.title, text: item.text, url: postUrl(item) });
       return;
     } catch (err) {
       if ((err as DOMException)?.name === "AbortError") return; // user cancelled
@@ -39,7 +52,7 @@ export function ShareDialog({
   open,
   onOpenChange,
 }: {
-  post: FeedPost;
+  post: FeedPost | ShareItem;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
@@ -54,7 +67,8 @@ export function ShareDialog({
     [friends, following],
   );
 
-  const url = typeof window === "undefined" ? "" : postUrl(post);
+  const item = toShareItem(post);
+  const url = typeof window === "undefined" ? "" : postUrl(item);
   const enc = encodeURIComponent;
   const targets = [
     {
@@ -67,13 +81,13 @@ export function ShareDialog({
       label: "X (Twitter)",
       color: "bg-black",
       glyph: "𝕏",
-      href: `https://twitter.com/intent/tweet?url=${enc(url)}&text=${enc(post.title)}`,
+      href: `https://twitter.com/intent/tweet?url=${enc(url)}&text=${enc(item.title)}`,
     },
     {
       label: "WhatsApp",
       color: "bg-[#25D366]",
       glyph: "W",
-      href: `https://wa.me/?text=${enc(`${post.title} ${url}`)}`,
+      href: `https://wa.me/?text=${enc(`${item.title} ${url}`)}`,
     },
   ];
 
@@ -108,8 +122,8 @@ export function ShareDialog({
     >
       <SheetContent side="center" className="p-0">
         <SheetHeader className="pb-2">
-          <SheetTitle>Share post</SheetTitle>
-          <SheetDescription className="line-clamp-1">{post.title}</SheetDescription>
+          <SheetTitle>{item.label ?? "Share post"}</SheetTitle>
+          <SheetDescription className="line-clamp-1">{item.title}</SheetDescription>
         </SheetHeader>
 
         <div className="space-y-4 px-6 pb-6">

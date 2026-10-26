@@ -88,5 +88,5 @@ export function rankPosts(
 }
 
 export function uniqueValues<T>(items: T[], pick: (t: T) => string) {
-  return Array.from(new Set(items.map(pick))).sort();
+  return Array.from(new Set(items.map(pick))).filter(Boolean).sort();
 }

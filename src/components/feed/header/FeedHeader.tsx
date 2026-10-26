@@ -3,14 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { User, X } from "lucide-react";
+import { SlidersHorizontal, X } from "lucide-react";
 import { FeedIcon } from "../FeedIcon";
 import { BrandLogo } from "@/components/brand-logo";
-import { initials, useCurrentUser } from "@/lib/feed/use-current-user";
 import { activeFilterCount, filtersFromParams, filtersToQuery } from "@/lib/feed/utils";
 import { cn } from "@/lib/utils";
 import { FilterDrawer } from "./FilterDrawer";
-import { FriendAddMenu } from "./FriendAddMenu";
+import { FriendsLink } from "./FriendsLink";
 import { HeaderIconButton } from "./HeaderIconButton";
 import { NotificationsMenu } from "./NotificationsMenu";
 import { SystemDrawer } from "./SystemDrawer";
@@ -22,7 +21,6 @@ export function FeedHeader() {
   const filters = filtersFromParams(params);
   const filterCount = activeFilterCount(filters);
   const onFeed = pathname === "/feed";
-  const { user } = useCurrentUser();
 
   const [query, setQuery] = useState(filters.q);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -86,7 +84,7 @@ export function FeedHeader() {
           filterCount ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground",
         )}
       >
-        <FeedIcon name="settings" />
+        <SlidersHorizontal className="size-4" />
         {filterCount > 0 && (
           <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground">
             {filterCount}
@@ -121,16 +119,8 @@ export function FeedHeader() {
         >
           {mobileSearch ? <X /> : <FeedIcon name="magnifying-glass" className="size-5" />}
         </HeaderIconButton>
-        <FriendAddMenu />
+        <FriendsLink />
         <NotificationsMenu />
-        <Link
-          href="/admin/profile"
-          aria-label="Your profile"
-          title="Your profile"
-          className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground ring-2 ring-transparent transition hover:ring-border"
-        >
-          {user ? initials(user.name) : <User className="size-4" />}
-        </Link>
         <SystemDrawer />
       </div>
 

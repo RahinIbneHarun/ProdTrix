@@ -8,10 +8,10 @@ import { CreatorAvatar } from "@/components/feed/CreatorAvatar";
 import { FollowButton } from "@/components/feed/FollowButton";
 import { PostCard } from "@/components/feed/PostCard";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
-import { FEED_POSTS, getCreator } from "@/data/feed-data";
+import { getCreator } from "@/data/feed-data";
 import type { FeedFilters } from "@/interfaces/feed.interface";
 import { filtersFromParams, filtersToQuery, matchesFilters, rankPosts } from "@/lib/feed/utils";
-import { useFeedStore } from "@/store/feed-store";
+import { useAllPosts, useFeedStore } from "@/store/feed-store";
 
 const PAGE_SIZE = 3;
 
@@ -32,14 +32,16 @@ function Newsfeed() {
   const topicAffinity = useFeedStore((s) => s.topicAffinity);
   const creatorAffinity = useFeedStore((s) => s.creatorAffinity);
 
+  const allPosts = useAllPosts();
+
   const posts = useMemo(() => {
-    const visible = FEED_POSTS.filter(
+    const visible = allPosts.filter(
       (p) =>
         !hidden.includes(p.id) &&
         matchesFilters(p, filters, getCreator(p.creatorId)?.name),
     );
     return rankPosts(visible, topicAffinity, creatorAffinity);
-  }, [filters, hidden, topicAffinity, creatorAffinity]);
+  }, [allPosts, filters, hidden, topicAffinity, creatorAffinity]);
 
   // Infinite scroll: reveal the next page when the sentinel comes into view.
   const [limit, setLimit] = useState(PAGE_SIZE);
